@@ -1,0 +1,26 @@
+{
+  "name": "tkw_2551050196_tai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx @tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2551050196tai-boop/tkw_2551050196_Tai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/2551050196tai-boop/tkw_2551050196_Tai/issues"
+  },
+  "homepage": "https://github.com/2551050196tai-boop/tkw_2551050196_Tai#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
+}
