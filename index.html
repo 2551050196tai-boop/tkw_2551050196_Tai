@@ -3,10 +3,564 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quản lý bán hàng</title>
+    <title>Quản lý bán hàng - Landwind</title>
+    <!-- Link font từ Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Link file CSS đã build -->
     <link rel="stylesheet" href="./dist/output.css" />
   </head>
-  <body class="quanlybanhang">
-    <nav class="nav-bar"></nav>
+  <body class="font-body text-ink bg-white">
+    <!-- 1. NAVBAR (Buổi 1) -->
+    <header class="py-4 border-b border-line bg-white">
+      <div
+        class="mx-auto w-full max-w-6xl px-5 flex items-center justify-between"
+      >
+        <a href="#" class="font-display font-bold text-2xl text-brand-600"
+          >Landwind</a
+        >
+        <nav class="hidden md:flex gap-8 font-medium">
+          <a href="#" class="hover:text-brand-600">Sản phẩm</a>
+          <a href="price.html" class="hover:text-brand-600">Bảng giá</a>
+          <a href="#" class="hover:text-brand-600">Tài liệu</a>
+        </nav>
+        <div class="flex items-center gap-4">
+          <a href="#" class="font-medium">Đăng nhập</a>
+          <a
+            href="#"
+            class="bg-brand-600 text-white px-5 py-2 rounded-lg font-medium"
+            >Bắt đầu</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. HERO SECTION (Buổi 1) -->
+    <section class="py-24 bg-surface">
+      <div
+        class="mx-auto w-full max-w-6xl px-5 grid gap-12 lg:grid-cols-2 items-center"
+      >
+        <div class="flex flex-col gap-6">
+          <h1 class="font-display text-5xl font-extrabold leading-tight">
+            Giải pháp quản lý bán hàng toàn diện
+          </h1>
+          <p class="text-muted text-lg">
+            Tự động hóa quy trình, tối ưu doanh thu và quản lý kho hàng chỉ với
+            vài cú click chuột.
+          </p>
+          <div class="flex gap-4">
+            <a
+              href="#"
+              class="bg-brand-600 text-white px-6 py-3 rounded-lg font-medium"
+              >Dùng thử miễn phí</a
+            >
+          </div>
+        </div>
+        <div
+          class="bg-line h-80 rounded-card flex items-center justify-center text-muted"
+        >
+          <img src="quan-ly-b-1.webp" alt="hình ảnh quản lý" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. DẢI KHÁCH HÀNG (Buổi 2 - Tiết 2) -->
+    <section class="py-24 border-b border-line">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <ul class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+          <li class="text-xl font-bold text-muted">Google</li>
+          <li class="text-xl font-bold text-muted">Microsoft</li>
+          <li class="text-xl font-bold text-muted">Spotify</li>
+          <li class="text-xl font-bold text-muted">Amazon</li>
+          <li class="text-xl font-bold text-muted">Airbnb</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- BÀI TẬP VỀ NHÀ: SECTION "CÁCH HOẠT ĐỘNG" (Bổ sung) -->
+    <!-- Sử dụng chung hệ token: nhịp py-24, gap, container chuẩn -->
+    <section class="py-24 bg-surface">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <div class="text-center max-w-2xl mx-auto flex flex-col gap-4">
+          <h2 class="font-display text-4xl font-bold">
+            3 Bước Bắt Đầu Đơn Giản
+          </h2>
+          <p class="text-muted">
+            Hệ thống được thiết kế để bạn làm quen và triển khai nhanh chóng
+            nhất có thể.
+          </p>
+        </div>
+        <ul class="mt-14 grid gap-8 md:grid-cols-3 relative">
+          <li class="flex flex-col gap-4 items-center text-center">
+            <span
+              class="font-display text-4xl font-extrabold text-brand-50 mb-2"
+              style="color: var(--color-brand-600); opacity: 0.2"
+              >01</span
+            >
+            <h3 class="text-xl font-bold">Tạo tài khoản</h3>
+            <p class="text-muted">
+              Đăng ký tài khoản miễn phí chỉ trong 2 phút.
+            </p>
+          </li>
+          <li class="flex flex-col gap-4 items-center text-center">
+            <span
+              class="font-display text-4xl font-extrabold text-brand-50 mb-2"
+              style="color: var(--color-brand-600); opacity: 0.2"
+              >02</span
+            >
+            <h3 class="text-xl font-bold">Nhập dữ liệu</h3>
+            <p class="text-muted">
+              Đồng bộ sản phẩm từ Excel hoặc nhập thủ công.
+            </p>
+          </li>
+          <li class="flex flex-col gap-4 items-center text-center">
+            <span
+              class="font-display text-4xl font-extrabold text-brand-50 mb-2"
+              style="color: var(--color-brand-600); opacity: 0.2"
+              >03</span
+            >
+            <h3 class="text-xl font-bold">Bắt đầu bán</h3>
+            <p class="text-muted">
+              Lên đơn, in hóa đơn và quản lý doanh thu ngay.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. LƯỚI TÍNH NĂNG (Buổi 2 - Tiết 2) -->
+    <section class="py-24">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <div class="text-center max-w-2xl mx-auto flex flex-col gap-4">
+          <h2 class="font-display text-4xl font-bold">Tính năng nổi bật</h2>
+          <p class="text-muted">
+            Mọi thứ bạn cần để vận hành cửa hàng trơn tru đều có tại đây.
+          </p>
+        </div>
+        <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Thẻ 1 -->
+          <li class="flex flex-col gap-3">
+            <span
+              class="grid h-11 w-11 place-items-center rounded-lg bg-brand-50 text-brand-600"
+            >
+              <svg
+                aria-hidden="true"
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                ></path>
+              </svg>
+            </span>
+            <h3 class="text-xl font-bold">Quản lý tồn kho</h3>
+            <p class="text-muted">
+              Cập nhật số lượng theo thời gian thực, cảnh báo sắp hết hàng.
+            </p>
+          </li>
+          <!-- Thẻ 2 -->
+          <li class="flex flex-col gap-3">
+            <span
+              class="grid h-11 w-11 place-items-center rounded-lg bg-brand-50 text-brand-600"
+            >
+              <svg
+                aria-hidden="true"
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
+                ></path>
+              </svg>
+            </span>
+            <h3 class="text-xl font-bold">Báo cáo doanh thu</h3>
+            <p class="text-muted">
+              Biểu đồ trực quan giúp bạn nắm bắt dòng tiền mỗi ngày.
+            </p>
+          </li>
+          <!-- Thẻ 3 -->
+          <li class="flex flex-col gap-3">
+            <span
+              class="grid h-11 w-11 place-items-center rounded-lg bg-brand-50 text-brand-600"
+            >
+              <svg
+                aria-hidden="true"
+                class="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
+                ></path>
+              </svg>
+            </span>
+            <h3 class="text-xl font-bold">Phân quyền nhân viên</h3>
+            <p class="text-muted">
+              Bảo mật thông tin bằng cách giới hạn quyền truy cập riêng biệt.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5. CẢM NHẬN KHÁCH HÀNG (Buổi 2 - Tiết 3) -->
+    <section class="py-24 bg-surface">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <figure
+          class="mx-auto max-w-screen-md text-center flex flex-col items-center gap-8"
+        >
+          <svg
+            aria-hidden="true"
+            class="w-10 h-10 text-muted"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M14.017 18L14.017 21L16.243 21C20.407 21 23.479 17.659 23.479 13.047C23.479 9.074 20.89 6 16.924 6C16.326 6 15.753 6.084 15.207 6.243L15.932 8.163C16.255 8.084 16.591 8.04 16.924 8.04C19.336 8.04 21.066 9.947 21.066 12.63C21.066 15.485 19.467 17.202 16.994 17.202L16.242 17.202L14.017 18ZM4.949 18L4.949 21L7.175 21C11.339 21 14.411 17.659 14.411 13.047C14.411 9.074 11.822 6 7.856 6C7.258 6 6.685 6.084 6.139 6.243L6.864 8.163C7.187 8.084 7.523 8.04 7.856 8.04C10.268 8.04 11.998 9.947 11.998 12.63C11.998 15.485 10.399 17.202 7.926 17.202L7.174 17.202L4.949 18Z"
+            />
+          </svg>
+          <blockquote class="text-2xl font-medium text-ink leading-relaxed">
+            "Trước đây tối nào tôi cũng ngồi cộng số tới 9 giờ tối. Từ khi dùng
+            hệ thống này, việc chốt ca chỉ mất đúng 5 phút. Thực sự rất đáng
+            tiền!"
+          </blockquote>
+          <figcaption class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 rounded-full bg-line flex items-center justify-center font-bold text-muted"
+            >
+              A
+            </div>
+            <div class="text-left flex flex-col">
+              <span class="font-bold text-ink">Nguyễn Văn A</span>
+              <cite class="not-italic text-sm text-muted"
+                >Chủ chuỗi trà sữa, TP.HCM</cite
+              >
+            </div>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 6. KHỐI SỐ LIỆU (Buổi 2 - Tiết 3) -->
+    <section class="py-24 border-b border-line">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <dl
+          class="grid grid-cols-1 gap-8 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line"
+        >
+          <div class="text-center flex flex-col">
+            <dt class="order-2 mt-2 text-sm font-medium text-muted">
+              Vựa đang dùng hằng ngày
+            </dt>
+            <dd class="font-display text-5xl font-extrabold text-brand-600">
+              340+
+            </dd>
+          </div>
+          <div class="text-center flex flex-col pt-8 sm:pt-0">
+            <dt class="order-2 mt-2 text-sm font-medium text-muted">
+              Hóa đơn xuất mỗi tháng
+            </dt>
+            <dd class="font-display text-5xl font-extrabold text-brand-600">
+              1M+
+            </dd>
+          </div>
+          <div class="text-center flex flex-col pt-8 sm:pt-0">
+            <dt class="order-2 mt-2 text-sm font-medium text-muted">
+              Đánh giá 5 sao
+            </dt>
+            <dd class="font-display text-5xl font-extrabold text-brand-600">
+              99%
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 7. BẢNG GIÁ (Buổi 2 - Tiết 4) -->
+    <section class="py-24 bg-surface">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <div class="text-center max-w-2xl mx-auto flex flex-col gap-4 mb-14">
+          <h2 class="font-display text-4xl font-bold">Bảng giá minh bạch</h2>
+          <p class="text-muted">
+            Không phụ phí ẩn. Chọn gói phù hợp với quy mô cửa hàng của bạn.
+          </p>
+        </div>
+        <ul class="grid items-stretch gap-6 lg:grid-cols-3">
+          <!-- Gói 1 -->
+          <li
+            class="card flex h-full flex-col bg-white p-8 rounded-card border border-line"
+          >
+            <h3 class="text-2xl font-bold">Cơ bản</h3>
+            <p class="mt-4">
+              <span class="text-4xl font-display font-extrabold">Miễn phí</span>
+            </p>
+            <ul class="mt-8 mb-8 flex flex-col gap-4 text-muted">
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                1 người dùng
+              </li>
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                Quản lý 50 sản phẩm
+              </li>
+            </ul>
+            <a
+              href="#"
+              class="mt-auto block w-full py-3 px-4 text-center rounded-lg font-bold bg-brand-50 text-brand-600 hover:bg-line transition"
+              >Bắt đầu ngay</a
+            >
+          </li>
+          <!-- Gói 2: Nổi bật -->
+          <li
+            class="card relative flex h-full flex-col bg-white p-8 rounded-card ring-2 ring-brand-600 shadow-xl"
+          >
+            <span
+              class="absolute -top-3 left-6 bg-brand-600 text-white px-3 py-1 text-sm font-bold rounded-full"
+              >Được chọn nhiều nhất</span
+            >
+            <h3 class="text-2xl font-bold">Tiêu chuẩn</h3>
+            <p class="mt-4">
+              <span class="text-4xl font-display font-extrabold">199k</span>
+              <span class="text-muted">/tháng</span>
+            </p>
+            <ul class="mt-8 mb-8 flex flex-col gap-4 text-muted">
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                5 người dùng
+              </li>
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                Không giới hạn sản phẩm
+              </li>
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                Báo cáo nâng cao
+              </li>
+            </ul>
+            <a
+              href="#"
+              class="mt-auto block w-full py-3 px-4 text-center rounded-lg font-bold bg-brand-600 text-white hover:bg-accent-500 transition"
+              >Dùng thử 14 ngày</a
+            >
+          </li>
+          <!-- Gói 3 -->
+          <li
+            class="card flex h-full flex-col bg-white p-8 rounded-card border border-line"
+          >
+            <h3 class="text-2xl font-bold">Doanh nghiệp</h3>
+            <p class="mt-4">
+              <span class="text-4xl font-display font-extrabold">Liên hệ</span>
+            </p>
+            <ul class="mt-8 mb-8 flex flex-col gap-4 text-muted">
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                Tùy chỉnh tính năng
+              </li>
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                Hỗ trợ riêng 24/7
+              </li>
+              <li class="flex gap-2 items-center">
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5 text-accent-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  />
+                </svg>
+                Đào tạo nhân sự
+              </li>
+            </ul>
+            <a
+              href="#"
+              class="mt-auto block w-full py-3 px-4 text-center rounded-lg font-bold bg-brand-50 text-brand-600 hover:bg-line transition"
+              >Nhận tư vấn</a
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 8. FAQ (Buổi 2 - Tiết 5) -->
+    <section class="py-24">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <div class="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+          <div class="flex flex-col gap-4">
+            <h2 class="text-4xl font-display font-bold">Câu hỏi thường gặp</h2>
+            <p class="text-muted">
+              Nếu không tìm thấy câu trả lời, hãy liên hệ qua email hỗ trợ.
+            </p>
+          </div>
+          <div class="flex flex-col gap-8">
+            <div class="flex flex-col gap-2">
+              <h3 class="text-xl font-bold">
+                Phần mềm có dùng được trên điện thoại không?
+              </h3>
+              <p class="text-muted">
+                Có, hệ thống được thiết kế responsive hoạt động tốt trên cả máy
+                tính, tablet và điện thoại di động.
+              </p>
+            </div>
+            <div class="flex flex-col gap-2">
+              <h3 class="text-xl font-bold">
+                Tôi có thể nâng cấp gói giữa chừng không?
+              </h3>
+              <p class="text-muted">
+                Hoàn toàn có thể. Hệ thống sẽ tự động tính toán chi phí chênh
+                lệch theo số ngày sử dụng còn lại của bạn.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. CTA SECTION -->
+    <section class="py-24 bg-brand-50">
+      <div
+        class="mx-auto w-full max-w-6xl px-5 text-center flex flex-col items-center gap-6"
+      >
+        <h2 class="text-4xl font-display font-bold">
+          Sẵn sàng để tăng trưởng doanh thu?
+        </h2>
+        <p class="text-muted max-w-xl">
+          Bắt đầu dùng thử 14 ngày miễn phí. Không yêu cầu thẻ tín dụng.
+        </p>
+        <a
+          href="#"
+          class="bg-brand-600 text-white px-8 py-4 rounded-lg font-bold hover:bg-accent-500 transition"
+          >Đăng ký ngay</a
+        >
+      </div>
+    </section>
+
+    <!-- 10. FOOTER (Buổi 2 - Tiết 5) -->
+    <footer class="py-24 bg-white border-t border-line">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="flex flex-col gap-6">
+            <span class="font-display font-bold text-2xl text-brand-600"
+              >Landwind</span
+            >
+            <p class="text-muted">
+              Phần mềm quản lý bán hàng số 1 dành cho doanh nghiệp vừa và nhỏ.
+            </p>
+          </div>
+          <!-- Nhóm Sản phẩm -->
+          <nav aria-labelledby="footer-product" class="flex flex-col gap-6">
+            <h3 id="footer-product" class="font-bold text-ink">Sản phẩm</h3>
+            <ul class="flex flex-col gap-4 text-muted">
+              <li><a href="#" class="hover:text-brand-600">Tính năng</a></li>
+              <li><a href="#" class="hover:text-brand-600">Bảng giá</a></li>
+              <li><a href="#" class="hover:text-brand-600">Bảo mật</a></li>
+            </ul>
+          </nav>
+          <!-- Nhóm Hỗ trợ -->
+          <nav aria-labelledby="footer-support" class="flex flex-col gap-6">
+            <h3 id="footer-support" class="font-bold text-ink">Hỗ trợ</h3>
+            <ul class="flex flex-col gap-4 text-muted">
+              <li><a href="#" class="hover:text-brand-600">Tài liệu</a></li>
+              <li><a href="#" class="hover:text-brand-600">Cộng đồng</a></li>
+              <li><a href="#" class="hover:text-brand-600">Liên hệ</a></li>
+            </ul>
+          </nav>
+          <!-- Nhóm Công ty -->
+          <nav aria-labelledby="footer-company" class="flex flex-col gap-6">
+            <h3 id="footer-company" class="font-bold text-ink">Công ty</h3>
+            <ul class="flex flex-col gap-4 text-muted">
+              <li><a href="#" class="hover:text-brand-600">Về chúng tôi</a></li>
+              <li><a href="#" class="hover:text-brand-600">Tuyển dụng</a></li>
+              <li><a href="#" class="hover:text-brand-600">Blog</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="mt-12 pt-8 border-t border-line text-center text-muted">
+          &copy; 2026 Landwind. Đã đăng ký bản quyền.
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

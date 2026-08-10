@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bảng giá - Landwind</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./dist/output.css" />
+  </head>
+  <!-- Bạn có thể thêm class="dark" vào thẻ body hoặc html trong DevTools để test thử Dark mode -->
+  <body
+    class="font-body text-ink bg-surface dark:bg-surface-dark dark:text-ink-invert transition-colors duration-300"
+  >
+    <!-- HEADER (Tái sử dụng từ index.html) -->
+    <header
+      class="py-4 border-b border-line dark:border-line-invert bg-surface dark:bg-surface-dark"
+    >
+      <div
+        class="mx-auto w-full max-w-6xl px-5 flex items-center justify-between"
+      >
+        <a
+          href="index.html"
+          class="font-display font-bold text-2xl text-brand-600"
+          >Landwind</a
+        >
+        <nav class="hidden lg:flex gap-8 font-medium">
+          <a href="index.html" class="hover:text-brand-600">Sản phẩm</a>
+          <a href="pricing.html" class="text-brand-600">Bảng giá</a>
+          <a href="contact.html" class="hover:text-brand-600">Liên hệ</a>
+        </nav>
+        <div class="flex items-center gap-4">
+          <a href="#" class="font-medium hidden sm:block">Đăng nhập</a>
+          <a
+            href="#"
+            class="bg-brand-600 text-white px-5 py-2 rounded-lg font-medium"
+            >Bắt đầu</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- PHẦN 1: BẢNG GIÁ CHÍNH (Sử dụng Component đã trích xuất) -->
+    <section class="py-24">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <div class="text-center max-w-2xl mx-auto flex flex-col gap-4 mb-14">
+          <h1 class="font-display text-4xl sm:text-5xl font-bold">
+            Đầu tư thông minh cho cửa hàng của bạn
+          </h1>
+          <p class="text-muted">
+            Chọn gói dịch vụ phù hợp nhất. Có thể hủy hoặc nâng cấp bất kỳ lúc
+            nào.
+          </p>
+        </div>
+
+        <ul class="grid items-stretch gap-6 lg:grid-cols-3">
+          <!-- Gói Cơ bản -->
+          <li class="card">
+            <h3 class="text-2xl font-bold">Cơ bản</h3>
+            <p class="mt-4">
+              <span class="text-4xl font-display font-extrabold">0đ</span>
+            </p>
+            <ul
+              class="mt-8 mb-8 flex flex-col gap-4 text-muted dark:text-gray-300"
+            >
+              <li>Quản lý 50 sản phẩm</li>
+              <li>1 tài khoản nhân viên</li>
+              <li>Hỗ trợ qua email</li>
+            </ul>
+            <a href="#" class="btn btn-ghost">Đăng ký miễn phí</a>
+          </li>
+
+          <!-- Gói Tiêu chuẩn (Nổi bật) -->
+          <li class="card relative ring-2 ring-brand-600 shadow-xl">
+            <span class="badge">Được chọn nhiều nhất</span>
+            <h3 class="text-2xl font-bold">Tiêu chuẩn</h3>
+            <p class="mt-4">
+              <span class="text-4xl font-display font-extrabold">199k</span>
+              <span class="text-muted">/tháng</span>
+            </p>
+            <ul
+              class="mt-8 mb-8 flex flex-col gap-4 text-muted dark:text-gray-300"
+            >
+              <li>Sản phẩm không giới hạn</li>
+              <li>5 tài khoản nhân viên</li>
+              <li>Báo cáo doanh thu nâng cao</li>
+            </ul>
+            <a href="#" class="btn btn-primary">Dùng thử 14 ngày</a>
+          </li>
+
+          <!-- Gói Doanh nghiệp -->
+          <li class="card">
+            <h3 class="text-2xl font-bold">Doanh nghiệp</h3>
+            <p class="mt-4">
+              <span class="text-4xl font-display font-extrabold">599k</span>
+              <span class="text-muted">/tháng</span>
+            </p>
+            <ul
+              class="mt-8 mb-8 flex flex-col gap-4 text-muted dark:text-gray-300"
+            >
+              <li>Mọi tính năng của Tiêu chuẩn</li>
+              <li>Không giới hạn nhân viên</li>
+              <li>Hỗ trợ kỹ thuật 24/7 trực tiếp</li>
+            </ul>
+            <a href="#" class="btn btn-ghost">Mua ngay</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: BẢNG SO SÁNH TÍNH NĂNG CHI TIẾT (Làm cuộn ngang cho Mobile) -->
+    <section
+      class="py-24 bg-brand-50 dark:bg-surface-dark-alt border-y border-line dark:border-line-invert"
+    >
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <h2 class="font-display text-3xl font-bold mb-8">
+          So sánh chi tiết tính năng
+        </h2>
+
+        <!-- Hướng dẫn cho màn hình nhỏ -->
+        <p class="mt-2 mb-4 text-sm text-muted font-medium lg:hidden">
+          Vuốt ngang để xem hết bảng.
+        </p>
+
+        <!-- Bọc bảng trong overflow-x-auto và đặt min-w để tránh vỡ chữ -->
+        <div class="overflow-x-auto pb-4">
+          <table class="min-w-[720px] w-full text-left border-collapse">
+            <thead>
+              <tr
+                class="border-b-2 border-line dark:border-line-invert text-lg"
+              >
+                <th class="py-4 px-4 w-1/4">Tính năng</th>
+                <th class="py-4 px-4 w-1/4">Cơ bản</th>
+                <th class="py-4 px-4 w-1/4">Tiêu chuẩn</th>
+                <th class="py-4 px-4 w-1/4">Doanh nghiệp</th>
+              </tr>
+            </thead>
+            <tbody
+              class="divide-y divide-line dark:divide-line-invert text-muted dark:text-gray-300"
+            >
+              <tr>
+                <td class="py-4 px-4 font-medium text-ink dark:text-ink-invert">
+                  Quản lý kho
+                </td>
+                <td class="py-4 px-4">50 SP</td>
+                <td class="py-4 px-4">Không giới hạn</td>
+                <td class="py-4 px-4">Không giới hạn</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-medium text-ink dark:text-ink-invert">
+                  Máy in bill
+                </td>
+                <td class="py-4 px-4">—</td>
+                <td class="py-4 px-4">Có hỗ trợ</td>
+                <td class="py-4 px-4">Có hỗ trợ</td>
+              </tr>
+              <tr>
+                <td class="py-4 px-4 font-medium text-ink dark:text-ink-invert">
+                  Chăm sóc khách hàng
+                </td>
+                <td class="py-4 px-4">Giờ hành chính</td>
+                <td class="py-4 px-4">Giờ hành chính</td>
+                <td class="py-4 px-4 font-bold text-brand-600">
+                  24/7 (Ưu tiên)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: FAQ VỀ THANH TOÁN -->
+    <section class="py-24">
+      <div class="mx-auto w-full max-w-6xl px-5">
+        <div class="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+          <div class="flex flex-col gap-4">
+            <h2 class="text-3xl font-display font-bold">
+              Thắc mắc về thanh toán?
+            </h2>
+            <p class="text-muted">
+              Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giải đáp.
+            </p>
+          </div>
+          <div class="flex flex-col gap-8">
+            <div class="flex flex-col gap-2">
+              <h3 class="text-xl font-bold">
+                Tôi có thể thanh toán bằng hình thức nào?
+              </h3>
+              <p class="text-muted">
+                Chúng tôi chấp nhận chuyển khoản ngân hàng (Momo, VNPay) và các
+                loại thẻ tín dụng phổ biến như Visa, Mastercard.
+              </p>
+            </div>
+            <div class="flex flex-col gap-2">
+              <h3 class="text-xl font-bold">
+                Nếu tôi muốn hủy gói giữa chừng?
+              </h3>
+              <p class="text-muted">
+                Bạn có thể hủy gói bất kỳ lúc nào tại mục Cài đặt. Hệ thống sẽ
+                không tự động trừ tiền vào chu kỳ tiếp theo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER (Tái sử dụng) -->
+    <footer
+      class="py-24 border-t border-line dark:border-line-invert bg-surface dark:bg-surface-dark"
+    >
+      <!-- Code footer giống file index.html -->
+      <div class="mx-auto w-full max-w-6xl px-5 text-center text-muted">
+        &copy; 2026 Landwind. Đã đăng ký bản quyền.
+      </div>
+    </footer>
+  </body>
+</html>
