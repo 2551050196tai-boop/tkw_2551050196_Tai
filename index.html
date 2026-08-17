@@ -15,8 +15,9 @@
     <link rel="stylesheet" href="./dist/output.css" />
   </head>
   <body class="font-body text-ink bg-white">
+    <div id="nav-sentinel" aria-hidden="true" class="h-px"></div>
     <!-- 1. NAVBAR (Buổi 1) -->
-    <header class="py-4 border-b border-line bg-white">
+    <header id="site-header" class="sticky top-0 z-50 py-4 border-b border-line bg-white transition-shadow">
       <div
         class="mx-auto w-full max-w-6xl px-5 flex items-center justify-between"
       >
@@ -24,9 +25,9 @@
           >Landwind</a
         >
         <nav class="hidden md:flex gap-8 font-medium">
-          <a href="#" class="hover:text-brand-600">Sản phẩm</a>
+          <a href="product.html" class="hover:text-brand-600">Sản phẩm</a>
           <a href="price.html" class="hover:text-brand-600">Bảng giá</a>
-          <a href="#" class="hover:text-brand-600">Tài liệu</a>
+          <a href="documents.html" class="hover:text-brand-600">Tài liệu</a>
         </nav>
         <div class="flex items-center gap-4">
           <a href="#" class="font-medium">Đăng nhập</a>
@@ -35,8 +36,18 @@
             class="bg-brand-600 text-white px-5 py-2 rounded-lg font-medium"
             >Bắt đầu</a
           >
+          <button type="button" class="inline-grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-brand-50 md:hidden" aria-controls="nav-mobile" aria-expanded="false" aria-label="Mở menu">
+            <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
         </div>
       </div>
+      <nav id="nav-mobile" class="hidden border-t border-line bg-white px-5 py-4 md:hidden" aria-label="Mobile navigation">
+        <div class="mx-auto flex w-full max-w-6xl flex-col gap-1 font-medium">
+          <a href="product.html" class="rounded-lg px-4 py-3 hover:bg-brand-50">Sản phẩm</a>
+          <a href="price.html" class="rounded-lg px-4 py-3 hover:bg-brand-50">Bảng giá</a>
+          <a href="documents.html" class="rounded-lg px-4 py-3 hover:bg-brand-50">Tài liệu</a>
+        </div>
+      </nav>
     </header>
 
     <!-- 2. HERO SECTION (Buổi 1) -->
@@ -562,5 +573,6 @@
         </div>
       </div>
     </footer>
+    <script type="module" src="./js/main.js"></script>
   </body>
 </html>
