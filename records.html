@@ -11,7 +11,7 @@
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 
     <script defer src="./js/app.js"></script>
-    <script type="module" src="./js/records.js?v=7" fetchpriority="high"></script>
+    <script defer src="./js/records.js?v=8"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -67,6 +67,24 @@
     </script>
 
     <link rel="stylesheet" href="./dist/output.css?v=5" />
+
+    <style>
+      :root:not(.dark) .rounded-card {
+        background-color: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.08);
+      }
+      .dark .rounded-card {
+        background-color: #1a2f2a;
+        border: 1px solid #24403a;
+        box-shadow: none;
+      }
+      .field-input[aria-invalid="true"],
+      select.field-input[aria-invalid="true"] {
+        border-color: #dc2626 !important;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
+      }
+    </style>
   </head>
 
   <body class="bg-surface font-body text-ink antialiased">
@@ -92,15 +110,15 @@
           <span class="font-display text-2xl font-bold text-brand-600 dark:text-brand-300">Landwind</span>
         </a>
 
-        <nav class="hidden items-center gap-6 text-sm font-medium md:flex" aria-label="Điều hướng chính">
+        <nav class="hidden items-center gap-8 text-sm font-medium md:flex" aria-label="Điều hướng chính">
           <a href="product.html" class="link-nav">Sản phẩm</a>
           <a href="pricing.html" class="link-nav">Bảng giá</a>
+          <a href="documents.html" class="link-nav">Tài liệu</a>
           <a
             href="records.html"
             class="link-nav font-bold text-brand-600 dark:text-brand-300"
             aria-current="page"
-          >Giao dịch</a>
-          <a href="documents.html" class="link-nav">Tài liệu</a>
+          >Sổ giao dịch</a>
           <a href="contact.html" class="link-nav">Liên hệ</a>
         </nav>
 
@@ -170,12 +188,12 @@
         <div class="mx-auto flex w-full max-w-6xl flex-col gap-1 font-medium">
           <a href="product.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Sản phẩm</a>
           <a href="pricing.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Bảng giá</a>
+          <a href="documents.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Tài liệu</a>
           <a
             href="records.html"
             class="rounded-lg bg-surface-alt px-4 py-3 font-bold text-brand-600 dark:text-brand-300"
             aria-current="page"
-          >Giao dịch</a>
-          <a href="documents.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Tài liệu</a>
+          >Sổ giao dịch</a>
           <a href="contact.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Liên hệ</a>
           <a href="pricing.html" class="btn btn-primary mt-2 w-full">Dùng thử 14 ngày</a>
         </div>
@@ -391,6 +409,7 @@
             id="record-form"
             class="mt-8 grid gap-5 rounded-card border border-line bg-surface p-5 shadow-sm sm:grid-cols-2 sm:p-7 lg:grid-cols-3"
             aria-describedby="record-form-hint"
+            novalidate
           >
             <div class="sm:col-span-2 lg:col-span-1">
               <label class="field-label" for="record-trader">
@@ -406,14 +425,16 @@
                 maxlength="100"
                 autocomplete="name"
                 placeholder="Ví dụ: Chú Tư Bến Tre"
+                aria-describedby="error-record-trader"
               />
+              <p class="field-error mt-1.5 text-xs text-danger" id="error-record-trader" aria-live="polite"></p>
             </div>
 
             <div>
               <label class="field-label" for="record-category">
                 Nhóm hàng <span class="text-danger" aria-hidden="true">*</span>
               </label>
-              <select class="field-input cursor-pointer" id="record-category" name="category" required>
+              <select class="field-input cursor-pointer" id="record-category" name="category" required aria-describedby="error-record-category">
                 <option value="">— Chọn nhóm hàng —</option>
                 <option value="Sầu riêng">Sầu riêng</option>
                 <option value="Xoài">Xoài</option>
@@ -421,18 +442,20 @@
                 <option value="Nhãn">Nhãn</option>
                 <option value="Mít">Mít</option>
               </select>
+              <p class="field-error mt-1.5 text-xs text-danger" id="error-record-category" aria-live="polite"></p>
             </div>
 
             <div>
               <label class="field-label" for="record-status">
                 Trạng thái <span class="text-danger" aria-hidden="true">*</span>
               </label>
-              <select class="field-input cursor-pointer" id="record-status" name="status" required>
+              <select class="field-input cursor-pointer" id="record-status" name="status" required aria-describedby="error-record-status">
                 <option value="">— Chọn trạng thái —</option>
                 <option value="dang-can">Đang cân</option>
                 <option value="da-chot">Đã chốt</option>
                 <option value="da-thanh-toan">Đã thanh toán</option>
               </select>
+              <p class="field-error mt-1.5 text-xs text-danger" id="error-record-status" aria-live="polite"></p>
             </div>
 
             <div>
@@ -449,7 +472,9 @@
                 step="1"
                 inputmode="numeric"
                 placeholder="500"
+                aria-describedby="error-record-weight"
               />
+              <p class="field-error mt-1.5 text-xs text-danger" id="error-record-weight" aria-live="polite"></p>
             </div>
 
             <div>
@@ -466,18 +491,21 @@
                 step="1"
                 inputmode="numeric"
                 placeholder="25000000"
+                aria-describedby="error-record-amount"
               />
+              <p class="field-error mt-1.5 text-xs text-danger" id="error-record-amount" aria-live="polite"></p>
             </div>
 
             <div>
               <label class="field-label" for="record-date">
                 Ngày giao dịch <span class="text-danger" aria-hidden="true">*</span>
               </label>
-              <input class="field-input" id="record-date" name="date" type="date" required />
+              <input class="field-input" id="record-date" name="date" type="date" required aria-describedby="error-record-date" />
+              <p class="field-error mt-1.5 text-xs text-danger" id="error-record-date" aria-live="polite"></p>
             </div>
 
             <div class="flex flex-col gap-3 border-t border-line pt-5 sm:col-span-2 sm:flex-row sm:items-center lg:col-span-3">
-              <button class="btn btn-primary btn-lg" type="submit">Thêm giao dịch</button>
+              <button class="btn btn-primary btn-lg cursor-pointer" type="submit">Thêm giao dịch</button>
               <p class="text-xs text-muted">Bản ghi mới sẽ được lưu trong trình duyệt này.</p>
             </div>
           </form>
@@ -505,7 +533,7 @@
           <ul class="flex flex-col gap-2.5 text-sm text-muted">
             <li><a href="product.html" class="link-nav">Tính năng</a></li>
             <li><a href="pricing.html" class="link-nav">Bảng giá</a></li>
-            <li><a href="records.html" class="link-nav font-bold text-brand-600 dark:text-brand-300">Giao dịch</a></li>
+            <li><a href="records.html" class="link-nav font-bold text-brand-600 dark:text-brand-300">Sổ giao dịch</a></li>
           </ul>
         </nav>
 

@@ -50,6 +50,10 @@ const elements = {
   rowTemplate: document.getElementById("record-row-template"),
   form: document.getElementById("record-form"),
   trader: document.getElementById("record-trader"),
+  categoryInput: document.getElementById("record-category"),
+  statusInput: document.getElementById("record-status"),
+  weightInput: document.getElementById("record-weight"),
+  amountInput: document.getElementById("record-amount"),
   formDate: document.getElementById("record-date"),
   toast: document.getElementById("records-toast"),
 };
@@ -185,6 +189,39 @@ function normalizeRecordList(records) {
   return normalized;
 }
 
+const DEFAULT_RECORDS = Object.freeze([
+  { "id": "PC-1307-101", "trader": "Chú Tư Bến Tre", "category": "Sầu riêng", "status": "dang-can", "weight": 660, "amount": 51480000, "date": "2026-07-13" },
+  { "id": "PC-1807-102", "trader": "Cô Tám Cái Bè", "category": "Xoài", "status": "da-chot", "weight": 2380, "amount": 76160000, "date": "2026-07-18" },
+  { "id": "PC-1707-103", "trader": "Chị Hường Long Hồ", "category": "Bưởi", "status": "dang-can", "weight": 420, "amount": 7980000, "date": "2026-07-17" },
+  { "id": "PC-1407-104", "trader": "Cô Tám Cái Bè", "category": "Xoài", "status": "da-chot", "weight": 1390, "amount": 44480000, "date": "2026-07-14" },
+  { "id": "PC-1407-105", "trader": "Chú Bảy Rạch Giá", "category": "Xoài", "status": "da-thanh-toan", "weight": 1690, "amount": 54080000, "date": "2026-07-14" },
+  { "id": "PC-2107-106", "trader": "Chú Tư Bến Tre", "category": "Xoài", "status": "da-thanh-toan", "weight": 850, "amount": 27200000, "date": "2026-07-21" },
+  { "id": "PC-1907-107", "trader": "Cô Lành Tam Bình", "category": "Xoài", "status": "dang-can", "weight": 1750, "amount": 56000000, "date": "2026-07-19" },
+  { "id": "PC-1807-108", "trader": "Anh Dũng Chợ Lách", "category": "Nhãn", "status": "da-chot", "weight": 390, "amount": 10920000, "date": "2026-07-18" },
+  { "id": "PC-1807-109", "trader": "Chú Bảy Rạch Giá", "category": "Mít", "status": "da-chot", "weight": 1470, "amount": 22050000, "date": "2026-07-18" },
+  { "id": "PC-1907-110", "trader": "Cô Tám Cái Bè", "category": "Sầu riêng", "status": "da-thanh-toan", "weight": 890, "amount": 69420000, "date": "2026-07-19" },
+  { "id": "PC-1507-111", "trader": "Chị Hường Long Hồ", "category": "Nhãn", "status": "da-thanh-toan", "weight": 520, "amount": 14560000, "date": "2026-07-15" },
+  { "id": "PC-2007-112", "trader": "Chú Tư Bến Tre", "category": "Bưởi", "status": "dang-can", "weight": 310, "amount": 5890000, "date": "2026-07-20" },
+  { "id": "PC-1607-113", "trader": "Anh Dũng Chợ Lách", "category": "Sầu riêng", "status": "da-thanh-toan", "weight": 1120, "amount": 87360000, "date": "2026-07-16" },
+  { "id": "PC-1707-114", "trader": "Cô Lành Tam Bình", "category": "Mít", "status": "dang-can", "weight": 980, "amount": 14700000, "date": "2026-07-17" },
+  { "id": "PC-2207-115", "trader": "Chú Bảy Rạch Giá", "category": "Bưởi", "status": "da-chot", "weight": 640, "amount": 12160000, "date": "2026-07-22" },
+  { "id": "PC-1307-116", "trader": "Cô Tám Cái Bè", "category": "Nhãn", "status": "da-thanh-toan", "weight": 780, "amount": 21840000, "date": "2026-07-13" },
+  { "id": "PC-1407-117", "trader": "Chị Hường Long Hồ", "category": "Sầu riêng", "status": "da-chot", "weight": 1450, "amount": 113100000, "date": "2026-07-14" },
+  { "id": "PC-1907-118", "trader": "Anh Dũng Chợ Lách", "category": "Xoài", "status": "dang-can", "weight": 1820, "amount": 58240000, "date": "2026-07-19" },
+  { "id": "PC-1607-119", "trader": "Chú Tư Bến Tre", "category": "Mít", "status": "da-thanh-toan", "weight": 1230, "amount": 18450000, "date": "2026-07-16" },
+  { "id": "PC-2007-120", "trader": "Cô Lành Tam Bình", "category": "Bưởi", "status": "da-chot", "weight": 560, "amount": 10640000, "date": "2026-07-20" },
+  { "id": "PC-2107-121", "trader": "Cô Tám Cái Bè", "category": "Bưởi", "status": "dang-can", "weight": 490, "amount": 9310000, "date": "2026-07-21" },
+  { "id": "PC-1507-122", "trader": "Chú Bảy Rạch Giá", "category": "Sầu riêng", "status": "da-chot", "weight": 930, "amount": 72540000, "date": "2026-07-15" },
+  { "id": "PC-2207-123", "trader": "Anh Dũng Chợ Lách", "category": "Mít", "status": "da-thanh-toan", "weight": 1650, "amount": 24750000, "date": "2026-07-22" },
+  { "id": "PC-1707-124", "trader": "Cô Lành Tam Bình", "category": "Nhãn", "status": "da-thanh-toan", "weight": 610, "amount": 17080000, "date": "2026-07-17" },
+  { "id": "PC-1307-125", "trader": "Chú Tư Bến Tre", "category": "Nhãn", "status": "da-chot", "weight": 440, "amount": 12320000, "date": "2026-07-13" },
+  { "id": "PC-1807-126", "trader": "Chị Hường Long Hồ", "category": "Xoài", "status": "dang-can", "weight": 2100, "amount": 67200000, "date": "2026-07-18" },
+  { "id": "PC-1607-127", "trader": "Cô Tám Cái Bè", "category": "Mít", "status": "da-chot", "weight": 1340, "amount": 20100000, "date": "2026-07-16" },
+  { "id": "PC-2107-128", "trader": "Chú Bảy Rạch Giá", "category": "Nhãn", "status": "dang-can", "weight": 830, "amount": 23240000, "date": "2026-07-21" },
+  { "id": "PC-1507-129", "trader": "Anh Dũng Chợ Lách", "category": "Bưởi", "status": "da-thanh-toan", "weight": 720, "amount": 13680000, "date": "2026-07-15" },
+  { "id": "PC-2207-130", "trader": "Chị Hường Long Hồ", "category": "Mít", "status": "da-thanh-toan", "weight": 1580, "amount": 23700000, "date": "2026-07-22" },
+]);
+
 async function fetchDefaultRecords() {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), DATA_REQUEST_TIMEOUT);
@@ -195,21 +232,20 @@ async function fetchDefaultRecords() {
       cache: "default",
       signal: controller.signal,
     });
+    if (response && response.ok) {
+      return normalizeRecordList(await response.json());
+    }
   } catch (error) {
     if (controller.signal.aborted) {
       throw new Error("Yêu cầu dữ liệu mất quá nhiều thời gian. Vui lòng thử lại.");
     }
-
-    throw error;
+    // Khi mở file:// trực tiếp hoặc mạng không có server, dùng dữ liệu mẫu mặc định
+    console.info("Dùng dữ liệu mẫu tích hợp sẵn do trình duyệt chặn fetch cục bộ.");
   } finally {
     window.clearTimeout(timeout);
   }
 
-  if (!response.ok) {
-    throw new Error(`Máy chủ trả về mã lỗi ${response.status}.`);
-  }
-
-  return normalizeRecordList(await response.json());
+  return normalizeRecordList(DEFAULT_RECORDS);
 }
 
 function readStoredRecords() {
@@ -571,8 +607,65 @@ elements.body.addEventListener("click", (event) => {
   }
 });
 
-elements.trader.addEventListener("input", () => {
-  elements.trader.setCustomValidity("");
+function messageFor(field) {
+  const v = field.validity;
+  if (v.valueMissing) return "Vui lòng điền mục này.";
+  if (v.tooShort) return `Nhập ít nhất ${field.minLength} ký tự. Ví dụ: Chú Tư Bến Tre`;
+  if (v.rangeUnderflow) return `Giá trị phải lớn hơn hoặc bằng ${field.min}.`;
+  if (v.typeMismatch) return "Dữ liệu chưa đúng định dạng.";
+  if (field.validationMessage) return field.validationMessage;
+  return "";
+}
+
+function validateField(field) {
+  if (!field) return true;
+  const errorBox = document.getElementById(`error-${field.id}`);
+  const message = messageFor(field);
+  const isValid = field.checkValidity();
+
+  if (!isValid) {
+    field.setAttribute("aria-invalid", "true");
+    if (errorBox) errorBox.textContent = message;
+  } else {
+    field.removeAttribute("aria-invalid");
+    if (errorBox) errorBox.textContent = "";
+  }
+  return isValid;
+}
+
+function clearFieldError(field) {
+  if (!field) return;
+  field.removeAttribute("aria-invalid");
+  const errorBox = document.getElementById(`error-${field.id}`);
+  if (errorBox) errorBox.textContent = "";
+}
+
+const formFields = [
+  elements.trader,
+  elements.categoryInput,
+  elements.statusInput,
+  elements.weightInput,
+  elements.amountInput,
+  elements.formDate,
+];
+
+formFields.forEach((field) => {
+  if (!field) return;
+  field.addEventListener("input", () => {
+    if (field === elements.trader) {
+      elements.trader.setCustomValidity(
+        elements.trader.value.trim().length > 0 && elements.trader.value.trim().length < 2
+          ? "Vui lòng nhập tên thương lái có ít nhất 2 ký tự."
+          : "",
+      );
+    }
+    if (field.hasAttribute("aria-invalid")) {
+      validateField(field);
+    }
+  });
+  field.addEventListener("change", () => {
+    validateField(field);
+  });
 });
 
 elements.form.addEventListener("submit", (event) => {
@@ -583,7 +676,19 @@ elements.form.addEventListener("submit", (event) => {
     trader.length < 2 ? "Vui lòng nhập tên thương lái có ít nhất 2 ký tự." : "",
   );
 
-  if (!elements.form.reportValidity()) return;
+  let firstInvalid = null;
+  formFields.forEach((field) => {
+    const valid = validateField(field);
+    if (!valid && !firstInvalid) {
+      firstInvalid = field;
+    }
+  });
+
+  if (firstInvalid) {
+    firstInvalid.focus();
+    showToast("Vui lòng kiểm tra lại các trường thông tin có lỗi.", "error");
+    return;
+  }
 
   const formData = new FormData(elements.form);
   const date = String(formData.get("date"));
@@ -602,14 +707,16 @@ elements.form.addEventListener("submit", (event) => {
     return;
   }
 
+  // Tự động thêm giao dịch mới vào đầu danh sách giao dịch
   state.records = [record, ...state.records];
   state.loading = false;
   state.error = null;
   persistRecords();
   elements.form.reset();
+  formFields.forEach(clearFieldError);
   elements.formDate.value = todayForInput();
   resetFilters();
-  showToast(`Đã thêm giao dịch ${record.id}.`);
+  showToast(`Đã thêm thành công giao dịch ${record.id} của ${record.trader}!`);
   revealRecord(record.id);
 });
 
