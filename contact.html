@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liên hệ tư vấn — Landwind</title>
+    <meta name="description" content="Gửi yêu cầu tư vấn phần mềm Landwind: gọi lại trong hai giờ làm việc, khảo sát 20 phút, hỗ trợ triển khai nhanh chóng." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- BUỔI 4 · Tiết 3: Script inline chống nháy trắng (FOUC) & Công tắc Dark/Light Mode -->
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var saved = null;
+        try { saved = localStorage.getItem("theme"); } catch (e) {}
+        var dark = saved
+          ? saved === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        root.classList.toggle("dark", dark);
+        root.classList.add("js");
+
+        // Hàm bật/tắt Light mode & Dark mode hỗ trợ cả khi mở trực tiếp file://
+        window.toggleTheme = function () {
+          if (window.__THEME_INIT__) return;
+          var isDark = root.classList.toggle("dark");
+          try { localStorage.setItem("theme", isDark ? "dark" : "light"); } catch (err) {}
+          var btn = document.getElementById("nut-nen-toi");
+          if (btn) {
+            btn.setAttribute("aria-pressed", String(isDark));
+            btn.setAttribute("aria-label", isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối");
+          }
+        };
+
+        // Fallback: nếu mở trực tiếp bằng file:// khiến module bị CORS chặn
+        setTimeout(function () {
+          if (!window.__MAIN_JS_LOADED__) {
+            var reveals = document.querySelectorAll("[data-reveal]");
+            for (var i = 0; i < reveals.length; i++) {
+              reveals[i].classList.add("is-visible");
+            }
+          }
+        }, 200);
+      })();
+    </script>
+
+    <link rel="stylesheet" href="./dist/output.css?v=3" />
+
+    <style>
+      /* Đảm bảo các ô hình chữ nhật nổi bật rõ nét tuyệt đối ở Light Mode */
+      :root:not(.dark) .card {
+        background-color: #f8fafc !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.08) !important;
+      }
+      :root:not(.dark) .card:hover {
+        background-color: #ffffff !important;
+        border-color: #94a3b8 !important;
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.12) !important;
+      }
+      /* Giữ nguyên 100% Dark Mode */
+      .dark .card {
+        background-color: #1a2f2a !important;
+        border: 1px solid #24403a !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+    </style>
+  </head>
+  <body class="font-body text-ink bg-surface antialiased">
+    <!-- Mốc theo dõi cuộn trang -->
+    <div id="nav-sentinel" aria-hidden="true" class="h-px w-full"></div>
+
+    <!-- Link bỏ qua điều hướng -->
+    <a href="#main"
+       class="btn btn-primary sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50">
+      Bỏ qua đến nội dung chính
+    </a>
+
+    <!-- NAVBAR -->
+    <header id="site-header" class="sticky top-0 z-50 border-b border-line bg-surface/90 backdrop-blur transition-shadow">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <span class="grid h-9 w-9 place-items-center rounded-lg bg-brand-600 font-display text-lg font-extrabold text-white">L</span>
+          <span class="font-display text-2xl font-bold text-brand-600 dark:text-brand-300">Landwind</span>
+        </a>
+
+        <nav class="hidden items-center gap-8 text-sm font-medium md:flex" aria-label="Điều hướng chính">
+          <a href="product.html" class="link-nav">Sản phẩm</a>
+          <a href="pricing.html" class="link-nav">Bảng giá</a>
+          <a href="documents.html" class="link-nav">Tài liệu</a>
+          <a href="contact.html" class="link-nav font-bold text-brand-600 dark:text-brand-300" aria-current="page">Liên hệ</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="contact.html" class="hidden text-sm font-medium sm:block link-nav">Đăng nhập</a>
+          <a href="pricing.html" class="btn btn-primary text-sm">Dùng thử 14 ngày</a>
+
+          <!-- Nút đổi nền sáng (Light) / tối (Dark) -->
+          <button type="button" id="nut-nen-toi" onclick="toggleTheme()"
+                  class="grid h-10 w-10 place-items-center rounded-pill border border-line text-ink hover:bg-surface-alt transition-colors cursor-pointer"
+                  aria-pressed="false" aria-label="Chuyển nền sáng / nền tối">
+            <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+            <svg class="hidden h-5 w-5 dark:block text-brand-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
+            </svg>
+          </button>
+
+          <!-- Nút mở menu mobile -->
+          <button type="button"
+                  class="grid h-10 w-10 place-items-center rounded-pill border border-line md:hidden hover:bg-surface-alt cursor-pointer"
+                  aria-controls="nav-mobile" aria-expanded="false" aria-label="Mở menu">
+            <svg aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <nav id="nav-mobile" class="hidden border-t border-line bg-surface px-5 py-4 md:hidden" aria-label="Điều hướng trên điện thoại">
+        <div class="mx-auto flex w-full max-w-6xl flex-col gap-1 font-medium">
+          <a href="product.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Sản phẩm</a>
+          <a href="pricing.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Bảng giá</a>
+          <a href="documents.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Tài liệu</a>
+          <a href="contact.html" class="rounded-lg bg-surface-alt px-4 py-3 font-bold text-brand-600 dark:text-brand-300">Liên hệ</a>
+          <a href="pricing.html" class="btn btn-primary mt-2 w-full">Dùng thử 14 ngày</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <!-- PHẦN 1: FORM LIÊN HỆ & THÔNG TIN TƯ VẤN -->
+      <section data-reveal class="section grid gap-12 lg:grid-cols-[1.3fr_1fr]" aria-labelledby="lienhe-title">
+        <div>
+          <p class="eyebrow">Liên hệ hỗ trợ</p>
+          <h1 id="lienhe-title" class="mt-3 font-display text-3xl font-extrabold sm:text-4xl">
+            Nói chuyện với chuyên viên tư vấn
+          </h1>
+          <p class="mt-4 text-muted text-lg">
+            Điền vài dòng thông tin, chúng tôi sẽ liên hệ lại trong vòng 2 giờ làm việc để tư vấn giải pháp phù hợp nhất.
+          </p>
+
+          <form class="mt-10 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label class="field-label" for="ho-ten">
+                Họ và tên <span class="text-danger" aria-hidden="true">*</span>
+              </label>
+              <input class="field-input" id="ho-ten" name="hoTen" type="text" required
+                     autocomplete="name" placeholder="Nguyễn Văn A" />
+              <p class="field-error" id="ho-ten-error" role="alert"></p>
+            </div>
+
+            <div>
+              <label class="field-label" for="dien-thoai">
+                Số điện thoại <span class="text-danger" aria-hidden="true">*</span>
+              </label>
+              <input class="field-input" id="dien-thoai" name="dienThoai" type="tel" required
+                     pattern="0[0-9]{9}" inputmode="numeric" autocomplete="tel"
+                     placeholder="0912345678"
+                     aria-describedby="dien-thoai-hint dien-thoai-error" />
+              <p class="mt-1.5 text-xs text-muted" id="dien-thoai-hint">
+                10 chữ số, bắt đầu bằng 0. Chúng tôi chỉ gọi tư vấn, không gửi tin rác.
+              </p>
+              <p class="field-error" id="dien-thoai-error" role="alert"></p>
+            </div>
+
+            <div>
+              <label class="field-label" for="email">Email</label>
+              <input class="field-input" id="email" name="email" type="email"
+                     autocomplete="email" placeholder="ten@cuahang.com"
+                     aria-describedby="email-hint email-error" />
+              <p class="mt-1.5 text-xs text-muted" id="email-hint">Để nhận báo giá và tài liệu hướng dẫn.</p>
+              <p class="field-error" id="email-error" role="alert"></p>
+            </div>
+
+            <div>
+              <label class="field-label" for="ten-vua">Tên cửa hàng / Doanh nghiệp</label>
+              <input class="field-input" id="ten-vua" name="tenVua" type="text"
+                     autocomplete="organization" placeholder="Cửa hàng Landwind Store" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="field-label" for="quy-mo">
+                Quy mô kinh doanh <span class="text-danger" aria-hidden="true">*</span>
+              </label>
+              <select class="field-input cursor-pointer" id="quy-mo" name="quyMo" required
+                      aria-describedby="quy-mo-hint quy-mo-error">
+                <option value="">— Chọn quy mô cửa hàng —</option>
+                <option value="nho">Cửa hàng nhỏ (dưới 50 đơn/ngày, 1 thu ngân)</option>
+                <option value="vua">Cửa hàng vừa (50 - 300 đơn/ngày, có nhiều ca bán)</option>
+                <option value="chuoi">Chuỗi nhiều chi nhánh, cần quản lý kho tập trung</option>
+                <option value="chua-ro">Chưa rõ, cần chuyên viên tư vấn chi tiết</option>
+              </select>
+              <p class="mt-1.5 text-xs text-muted" id="quy-mo-hint">Chọn quy mô gần đúng để chúng tôi chuẩn bị bản demo phù hợp.</p>
+              <p class="field-error" id="quy-mo-error" role="alert"></p>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="field-label" for="noi-dung">Nhu cầu hiện tại của bạn</label>
+              <textarea class="field-input" id="noi-dung" name="noiDung" rows="3"
+                        placeholder="Ví dụ: Đang ghi sổ tay hoặc dùng Excel, muốn chuyển sang phần mềm in hóa đơn và quản lý tồn kho tự động..."
+                        aria-describedby="noi-dung-hint"></textarea>
+              <p class="mt-1.5 text-xs text-muted" id="noi-dung-hint">Mô tả ngắn giúp chuyên viên nắm rõ nhu cầu của bạn nhanh hơn.</p>
+            </div>
+
+            <div class="flex items-start gap-3 sm:col-span-2">
+              <input class="mt-1 h-4 w-4 shrink-0 accent-brand-600 rounded"
+                     id="dong-y" name="dongY" type="checkbox" required
+                     aria-describedby="dong-y-hint dong-y-error" />
+              <div>
+                <label class="field-label !mb-0 font-normal cursor-pointer" for="dong-y">
+                  Đồng ý để chuyên viên Landwind liên hệ tư vấn <span class="text-danger" aria-hidden="true">*</span>
+                </label>
+                <p class="mt-1 text-xs text-muted" id="dong-y-hint">
+                  Thông tin của bạn được cam kết bảo mật 100%, không chia sẻ cho bên thứ ba.
+                </p>
+                <p class="field-error" id="dong-y-error" role="alert"></p>
+              </div>
+            </div>
+
+            <div class="sm:col-span-2 pt-2">
+              <button class="btn btn-primary btn-lg w-full sm:w-auto" type="submit">
+                Gửi yêu cầu tư vấn
+              </button>
+              <p class="mt-3 text-xs text-muted">
+                Dấu <span class="text-danger" aria-hidden="true">*</span> là trường thông tin bắt buộc.
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <!-- CỘT PHẢI: THÔNG TIN LIÊN HỆ TRỰC TIẾP -->
+        <div class="card h-fit">
+          <h2 class="font-display text-xl font-bold">Gọi trực tiếp cho chúng tôi</h2>
+          <p class="mt-2 text-sm text-muted">
+            Nếu cần trao đổi nhanh, bạn có thể gọi hotline để được gặp chuyên viên ngay.
+          </p>
+
+          <dl class="mt-6 flex flex-col gap-5 border-t border-line pt-6 text-sm">
+            <div>
+              <dt class="font-semibold text-ink">Điện thoại Hotline</dt>
+              <dd class="mt-1">
+                <a class="link-nav font-bold text-brand-600 dark:text-brand-300 text-base" href="tel:+842873001234">028 7300 1234</a>
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-ink">Email hỗ trợ</dt>
+              <dd class="mt-1">
+                <a class="link-nav" href="mailto:hotro@landwind.vn">hotro@landwind.vn</a>
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-ink">Giờ làm việc</dt>
+              <dd class="mt-1 text-muted">
+                Thứ Hai đến Thứ Bảy: 8:00 – 18:00<br />
+                Chủ Nhật: Trực hỗ trợ kỹ thuật khẩn cấp
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-ink">Văn phòng đại diện</dt>
+              <dd class="mt-1 text-muted">
+                <address class="not-italic">
+                  128 Nguyễn Văn Cừ, Phường An Hòa<br />
+                  TP. Cần Thơ, Việt Nam
+                </address>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- PHẦN 2: QUY TRÌNH SAU KHI GỬI -->
+      <section data-reveal class="section border-t border-line" aria-labelledby="quy-trinh-title">
+        <div class="mx-auto max-w-2xl text-center mb-12">
+          <p class="eyebrow">Quy trình chuyên nghiệp</p>
+          <h2 id="quy-trinh-title" class="mt-3 font-display text-3xl font-bold">
+            3 Bước hỗ trợ triển khai nhanh gọn
+          </h2>
+        </div>
+
+        <ol class="grid gap-6 sm:grid-cols-3">
+          <li class="card relative">
+            <span class="badge">Bước 01</span>
+            <h3 class="mt-2 font-display text-lg font-bold">Gọi lại trong 2 giờ</h3>
+            <p class="mt-2 text-sm text-muted">
+              Chuyên viên liên hệ trao đổi ngắn gọn 3 câu hỏi về mặt hàng, quy mô và cách bạn đang quản lý.
+            </p>
+          </li>
+          <li class="card relative">
+            <span class="badge">Bước 02</span>
+            <h3 class="mt-2 font-display text-lg font-bold">Demo trực quan 20 phút</h3>
+            <p class="mt-2 text-sm text-muted">
+              Hướng dẫn qua Zalo / Google Meet hoặc trực tiếp tại cửa hàng, thiết lập thử dữ liệu mẫu cho bạn.
+            </p>
+          </li>
+          <li class="card relative">
+            <span class="badge">Bước 03</span>
+            <h3 class="mt-2 font-display text-lg font-bold">Đồng hành trong 1 buổi</h3>
+            <p class="mt-2 text-sm text-muted">
+              Hỗ trợ kết nối máy in hóa đơn, nhập danh mục sản phẩm và đứng cùng ca bán đầu tiên cho đến khi quen tay.
+            </p>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-line bg-surface py-16">
+      <div class="mx-auto grid w-full max-w-6xl gap-10 px-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-col gap-4">
+          <a href="index.html" class="flex items-center gap-2">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand-600 font-display font-bold text-white">L</span>
+            <span class="font-display text-xl font-bold text-brand-600 dark:text-brand-300">Landwind</span>
+          </a>
+          <p class="text-sm text-muted">
+            Phần mềm quản lý bán hàng đơn giản, trực quan và tối ưu cho doanh nghiệp bán lẻ.
+          </p>
+        </div>
+
+        <nav aria-labelledby="footer-product" class="flex flex-col gap-3">
+          <h3 id="footer-product" class="text-xs font-bold uppercase tracking-wider text-ink">Sản phẩm</h3>
+          <ul class="flex flex-col gap-2.5 text-sm text-muted">
+            <li><a href="product.html" class="link-nav">Tính năng</a></li>
+            <li><a href="pricing.html" class="link-nav">Bảng giá</a></li>
+            <li><a href="documents.html" class="link-nav">Tài liệu</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footer-support" class="flex flex-col gap-3">
+          <h3 id="footer-support" class="text-xs font-bold uppercase tracking-wider text-ink">Hỗ trợ</h3>
+          <ul class="flex flex-col gap-2.5 text-sm text-muted">
+            <li><a href="contact.html" class="link-nav font-bold text-brand-600 dark:text-brand-300">Liên hệ tư vấn</a></li>
+            <li><a href="index.html#cau-hoi" class="link-nav">Câu hỏi thường gặp</a></li>
+            <li><a href="tel:02873001234" class="link-nav">028 7300 1234</a></li>
+          </ul>
+        </nav>
+
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink mb-3">Địa chỉ</h3>
+          <address class="not-italic text-sm text-muted leading-relaxed">
+            128 Nguyễn Văn Cừ, Phường An Hòa<br />
+            TP. Cần Thơ, Việt Nam
+          </address>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-6xl border-t border-line px-5 pt-8 text-center text-xs text-muted">
+        &copy; 2026 Landwind. Môn Thực hành Thiết kế Web. Đã đăng ký bản quyền.
+      </div>
+    </footer>
+
+    <!-- BUỔI 4 · Nút lên đầu trang -->
+    <button type="button" id="nut-len-dau" class="to-top" aria-label="Lên đầu trang">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    </button>
+
+    <!-- Khởi động JavaScript (hỗ trợ cả Live Server và mở trực tiếp file://) -->
+    <script src="./js/app.js"></script>
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>
