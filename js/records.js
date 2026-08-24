@@ -1,7 +1,8 @@
-const STORAGE_KEY = "landwind:records:v1";
-const STORAGE_VERSION = 1;
+const STORAGE_KEY = "landwind:records:v2";
+const STORAGE_VERSION = 2;
 const DATA_REQUEST_TIMEOUT = 8000;
 const LOADING_INDICATOR_DELAY = 160;
+const NEW_RECORD_HIGHLIGHT_DURATION = 2800;
 
 const STATUS_LABELS = Object.freeze({
   "dang-can": "Đang cân",
@@ -321,6 +322,37 @@ function buildRow(record) {
   return row;
 }
 
+function revealRecord(recordId) {
+  window.requestAnimationFrame(() => {
+    const row = [...elements.body.rows].find(
+      (candidate) => candidate.dataset.recordId === recordId,
+    );
+
+    if (!row) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const highlightClasses = [
+      "bg-brand-50",
+      "ring-2",
+      "ring-brand-600",
+      "dark:bg-surface-dark-alt",
+      "dark:ring-brand-300",
+    ];
+
+    row.tabIndex = -1;
+    row.classList.add(...highlightClasses);
+    row.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "center",
+    });
+    row.focus({ preventScroll: true });
+
+    window.setTimeout(() => {
+      row.classList.remove(...highlightClasses);
+    }, NEW_RECORD_HIGHLIGHT_DURATION);
+  });
+}
+
 function render() {
   const list = visibleRecords();
   const showError = !state.loading && Boolean(state.error);
@@ -578,7 +610,7 @@ elements.form.addEventListener("submit", (event) => {
   elements.formDate.value = todayForInput();
   resetFilters();
   showToast(`Đã thêm giao dịch ${record.id}.`);
-  elements.trader.focus();
+  revealRecord(record.id);
 });
 
 elements.formDate.value = todayForInput();
