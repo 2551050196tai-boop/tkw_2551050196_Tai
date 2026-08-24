@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+/* Dark mode theo class "dark" trên thẻ <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Màu sáng (Light mode tokens) */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-300: #93c5fd;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-900: #1e3a8a;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-ink: #0f172a;
+  --color-muted: #475569;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1f5f9;
+  --color-line: #cbd5e1;
+
+  /* Màu tối (Dark mode tokens) - Giữ nguyên 100% */
+  --color-ink-invert: #eaf2ee;
+  --color-muted-invert: #94a3b8;
+  --color-line-invert: #24403a;
+  --color-surface-dark: #0e1c19;
+  --color-surface-dark-alt: #1a2f2a;
+
+  /* Màu báo lỗi */
+  --color-danger: #dc2626;
+  --color-danger-invert: #f87171;
+
+  /* Phông chữ & Bo góc */
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --radius-card: 24px;
+  --radius-pill: 999px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  /* Đảo giá trị token khi bật .dark */
+  .dark {
+    --color-ink: var(--color-ink-invert);
+    --color-muted: var(--color-muted-invert);
+    --color-line: var(--color-line-invert);
+    --color-surface: var(--color-surface-dark);
+    --color-surface-alt: var(--color-surface-dark-alt);
+    --color-danger: var(--color-danger-invert);
+  }
+
+  body {
+    @apply bg-surface text-ink font-body antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  h1, h2, h3 {
+    @apply font-display tracking-tight;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-600 dark:outline-brand-300;
+  }
+}
+
+/* ==============================================================
+   COMPONENT CHUNG
+   ============================================================== */
+@layer components {
+  .section {
+    @apply mx-auto w-full max-w-6xl px-5 py-20 lg:py-24;
+  }
+
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-widest text-brand-600 dark:text-brand-300;
+  }
+
+  .link-nav {
+    @apply transition-colors duration-150 hover:text-brand-600 dark:hover:text-brand-300;
+  }
+
+  /* Thẻ box ô hình chữ nhật: màu nền xám sáng thanh lịch (#f8fafc) + viền rõ (#cbd5e1) ở Light Mode */
+  .card {
+    @apply flex h-full flex-col rounded-card p-8 transition-all duration-200;
+    background-color: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  }
+
+  .card:hover {
+    background-color: #ffffff;
+    border-color: #94a3b8;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.12);
+  }
+
+  /* Giữ nguyên 100% tuyệt đối ở Dark Mode */
+  .dark .card {
+    background-color: var(--color-surface-dark-alt);
+    border: 1px solid var(--color-line-invert);
+    box-shadow: none;
+    transform: none;
+  }
+
+  .dark .card:hover {
+    background-color: var(--color-surface-dark-alt);
+    border-color: var(--color-line-invert);
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-3 text-center font-bold transition duration-150 cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply bg-brand-600 text-white hover:bg-brand-700 shadow-sm;
+  }
+
+  .btn-ghost {
+    @apply bg-white text-brand-600 border border-brand-300 hover:bg-brand-50 dark:border-transparent dark:bg-surface-dark dark:text-brand-300 dark:hover:bg-surface-dark-alt;
+  }
+
+  .btn-lg {
+    @apply px-6 py-3.5 text-base;
+  }
+
+  .badge {
+    @apply absolute -top-3 left-6 rounded-full bg-brand-600 px-3 py-1 text-sm font-bold text-white shadow-sm;
+  }
+
+  /* Khung chứa bảng so sánh tính năng */
+  .box-bang-so-sanh {
+    background-color: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius-card);
+  }
+
+  .dark .box-bang-so-sanh {
+    background-color: var(--color-surface-dark-alt);
+    border: 1px solid var(--color-line-invert);
+    box-shadow: none;
+  }
+
+  /* Trường nhập liệu form liên hệ */
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+
+  .field-input {
+    @apply w-full rounded-lg border border-line bg-surface px-4 py-2.5 text-ink transition focus:border-brand-600 focus:outline-none dark:border-line-invert dark:bg-surface-dark-alt dark:text-ink-invert dark:focus:border-brand-300;
+  }
+
+  .field-error {
+    @apply mt-1 text-xs text-danger dark:text-danger-invert min-h-[1rem];
+  }
+
+  /* Nút lên đầu trang */
+  .to-top {
+    @apply fixed bottom-6 right-6 z-40 grid h-11 w-11 place-items-center rounded-pill border border-line bg-surface text-ink shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none dark:bg-surface-dark-alt dark:text-ink-invert;
+  }
+
+  .to-top.is-visible {
+    @apply opacity-100 pointer-events-auto cursor-pointer;
+  }
+
+  /* FAQ Accordion */
+  .faq-trigger {
+    @apply cursor-pointer;
+  }
+
+  .faq-icon {
+    @apply transition-transform duration-200;
+  }
+
+  .faq-trigger[aria-expanded="true"] .faq-icon {
+    transform: rotate(180deg);
+  }
+
+  /* Công tắc bảng giá */
+  .cong-tac {
+    @apply relative inline-flex items-center h-7 w-12 shrink-0 rounded-pill border border-line bg-slate-200 transition-colors duration-200 cursor-pointer p-0;
+  }
+
+  .cong-tac-num {
+    @apply absolute top-[3px] left-[3px] h-5 w-5 rounded-pill bg-white shadow-md transition-transform duration-200 pointer-events-none;
+    transform: translateX(0);
+  }
+
+  .cong-tac[aria-checked="true"] .cong-tac-num {
+    transform: translateX(20px);
+  }
+
+  /* Slider cảm nhận */
+  .slider-viewport {
+    @apply overflow-hidden;
+  }
+
+  .slider-track {
+    @apply m-0 flex list-none p-0;
+    transition: transform 400ms ease;
+  }
+
+  .slider-slide {
+    @apply w-full shrink-0;
+  }
+
+  .slider-nav {
+    @apply grid h-10 w-10 place-items-center rounded-pill border border-line bg-surface transition hover:bg-surface-alt dark:bg-surface-dark-alt cursor-pointer shadow-sm;
+  }
+
+  .slider-dot {
+    @apply grid h-6 w-6 place-items-center rounded-pill bg-transparent cursor-pointer;
+  }
+
+  .slider-dot::before {
+    content: "";
+    @apply block h-2.5 w-2.5 rounded-pill border border-line transition;
+  }
+
+  .slider-dot[aria-current="true"]::before {
+    @apply border-brand-600 bg-brand-600 dark:border-brand-300 dark:bg-brand-300;
+  }
+
+  /* Reveal khi cuộn */
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 500ms ease, transform 500ms ease;
+  }
+
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slider-track,
+  .faq-icon,
+  .cong-tac,
+  .cong-tac-num,
+  .to-top,
+  .js [data-reveal] {
+    transition: none !important;
+  }
+  .js [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
