@@ -161,6 +161,15 @@
     @apply mt-1 text-xs text-danger dark:text-danger-invert min-h-[1rem];
   }
 
+  .field-input[aria-invalid="true"] {
+    @apply border-danger focus:border-danger focus:ring-2 focus:ring-danger/20 dark:border-danger-invert dark:focus:border-danger-invert;
+  }
+
+  input[type="checkbox"][aria-invalid="true"] {
+    outline: 2px solid var(--color-danger);
+    outline-offset: 3px;
+  }
+
   /* Nút lên đầu trang */
   .to-top {
     @apply fixed bottom-6 right-6 z-40 grid h-11 w-11 place-items-center rounded-pill border border-line bg-surface text-ink shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none dark:bg-surface-dark-alt dark:text-ink-invert;
