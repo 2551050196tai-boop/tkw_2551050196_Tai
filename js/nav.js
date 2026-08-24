@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-export function initNav() {
-  const toggle = document.querySelector('[aria-controls="nav-mobile"]');
-  const menu = document.getElementById("nav-mobile");
-  const header = document.getElementById("site-header");
-  if (!toggle || !menu || !header) return;
-
-=======
 // js/nav.js — Tính năng 1 (menu mobile), Tính năng 2 (navbar khi cuộn),
 //             và bài khởi động (nút lên đầu trang).
 //
@@ -25,35 +17,12 @@ export function initNav() {
   if (!toggle || !menu) return; // trang không có menu thì thoát êm
 
   // MỘT hàm duy nhất chịu trách nhiệm đổi trạng thái menu
->>>>>>> f3748ce (buoi-4)
   function setOpen(open) {
     menu.classList.toggle("hidden", !open);
     toggle.setAttribute("aria-expanded", String(open));
     toggle.setAttribute("aria-label", open ? "Đóng menu" : "Mở menu");
     document.body.classList.toggle("overflow-hidden", open);
   }
-<<<<<<< HEAD
-  const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
-  toggle.addEventListener("click", () => setOpen(!isOpen()));
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && isOpen()) { setOpen(false); toggle.focus(); }
-  });
-  document.addEventListener("click", (event) => {
-    if (isOpen() && !header.contains(event.target)) setOpen(false);
-  });
-  window.matchMedia("(min-width: 768px)").addEventListener("change", (event) => {
-    if (event.matches) setOpen(false);
-  });
-}
-
-export function initHeaderOnScroll() {
-  const header = document.getElementById("site-header");
-  const sentinel = document.getElementById("nav-sentinel");
-  if (!header || !sentinel || !("IntersectionObserver" in window)) return;
-  const observer = new IntersectionObserver(([entry]) => header.classList.toggle("shadow-sm", !entry.isIntersecting));
-  observer.observe(sentinel);
-}
-=======
 
   const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
 
@@ -131,4 +100,3 @@ export function initToTop() {
     }
   });
 }
->>>>>>> f3748ce (buoi-4)

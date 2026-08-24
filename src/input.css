@@ -1,22 +1,5 @@
 @import "tailwindcss";
 
-<<<<<<< HEAD
-/* Cấu hình custom variant cho dark mode theo yêu cầu của thầy */
-@custom-variant dark (&:where(.dark, dark));
-
-@theme {
-  /* Màu sáng (Sửa lại tông màu của bạn cho hợp lý) */
-  --color-brand-50: #e8efff;
-  --color-brand-600: #0000ff;
-  --color-accent-500: #5672ff;
-  --color-ink: #0c11ff; /* Đổi màu chữ tối hơn một chút nếu bị chói */
-  --color-muted: #5672ff;
-  --color-surface: #ffffff;
-  --color-line: #d5e2ff;
-
-  /* Màu tối (Dark mode tokens) - Không dùng màu đen #000 */
-  --color-ink-invert: #eaf2ee;
-=======
 /* Dark mode theo class "dark" trên thẻ <html>. */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -40,44 +23,18 @@
   /* Màu tối (Dark mode tokens) - Giữ nguyên 100% */
   --color-ink-invert: #eaf2ee;
   --color-muted-invert: #94a3b8;
->>>>>>> f3748ce (buoi-4)
   --color-line-invert: #24403a;
   --color-surface-dark: #0e1c19;
   --color-surface-dark-alt: #1a2f2a;
 
-<<<<<<< HEAD
-=======
   /* Màu báo lỗi */
   --color-danger: #dc2626;
   --color-danger-invert: #f87171;
 
->>>>>>> f3748ce (buoi-4)
   /* Phông chữ & Bo góc */
   --font-display: "Plus Jakarta Sans", sans-serif;
   --font-body: "Inter", sans-serif;
   --radius-card: 24px;
-<<<<<<< HEAD
-}
-
-/* Trích xuất Component (chỉ gom những thứ lặp lại từ 3 lần trở lên) */
-@layer components {
-  .card {
-    @apply rounded-card border border-line bg-surface p-8 flex h-full flex-col dark:border-line-invert dark:bg-surface-dark-alt;
-  }
-  .btn {
-    @apply mt-auto block w-full py-3 px-4 text-center rounded-lg font-bold transition;
-  }
-  .btn-primary {
-    @apply bg-brand-600 text-white hover:bg-accent-500;
-  }
-  .btn-ghost {
-    @apply bg-brand-50 text-brand-600 hover:bg-line dark:bg-surface-dark dark:text-brand-50;
-  }
-  .badge {
-    @apply absolute -top-3 left-6 bg-brand-600 text-white px-3 py-1 text-sm font-bold rounded-full;
-  }
-}
-=======
   --radius-pill: 999px;
 }
 
@@ -298,4 +255,3 @@
     transform: none !important;
   }
 }
->>>>>>> f3748ce (buoi-4)

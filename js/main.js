@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-import { initHeaderOnScroll, initNav } from "./nav.js";
-initNav();
-initHeaderOnScroll();
-=======
 // js/main.js — điểm khởi động DUY NHẤT cho tất cả các trang khi dùng ES Module.
 import { initHeaderOnScroll, initNav, initToTop } from "./nav.js";
 import { initTheme } from "./theme.js";
@@ -24,4 +19,3 @@ if (!window.__APP_LOADED__) {
   try { initSlider(); } catch (e) { console.error("initSlider error:", e); }
   try { initReveal(); } catch (e) { console.error("initReveal error:", e); }
 }
->>>>>>> f3748ce (buoi-4)
