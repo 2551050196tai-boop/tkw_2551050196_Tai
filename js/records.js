@@ -1,5 +1,7 @@
 const STORAGE_KEY = "landwind:records:v1";
 const STORAGE_VERSION = 1;
+const DATA_REQUEST_TIMEOUT = 8000;
+const LOADING_INDICATOR_DELAY = 160;
 
 const STATUS_LABELS = Object.freeze({
   "dang-can": "Đang cân",
@@ -20,10 +22,12 @@ const state = {
   status: "all",
   sort: "date-desc",
   loading: true,
+  loadingVisible: false,
   error: null,
 };
 
 const elements = {
+  content: document.getElementById("records-content"),
   filterFieldset: document.getElementById("records-filters"),
   search: document.getElementById("record-search"),
   category: document.getElementById("category-filter"),
@@ -85,6 +89,23 @@ const sorters = {
 };
 
 let toastTimer = null;
+let loadingIndicatorTimer = null;
+
+function scheduleLoadingIndicator() {
+  window.clearTimeout(loadingIndicatorTimer);
+  state.loadingVisible = false;
+  loadingIndicatorTimer = window.setTimeout(() => {
+    if (!state.loading) return;
+    state.loadingVisible = true;
+    render();
+  }, LOADING_INDICATOR_DELAY);
+}
+
+function stopLoadingIndicator() {
+  window.clearTimeout(loadingIndicatorTimer);
+  loadingIndicatorTimer = null;
+  state.loadingVisible = false;
+}
 
 function debounce(callback, delay) {
   let timer = null;
@@ -164,7 +185,24 @@ function normalizeRecordList(records) {
 }
 
 async function fetchDefaultRecords() {
-  const response = await fetch("./data/records.json", { cache: "no-store" });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), DATA_REQUEST_TIMEOUT);
+  let response;
+
+  try {
+    response = await fetch("./data/records.json", {
+      cache: "default",
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new Error("Yêu cầu dữ liệu mất quá nhiều thời gian. Vui lòng thử lại.");
+    }
+
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     throw new Error(`Máy chủ trả về mã lỗi ${response.status}.`);
@@ -290,7 +328,8 @@ function render() {
   const showReady = !state.loading && !state.error && list.length > 0;
   const filtered = hasActiveFilters();
 
-  elements.loading.hidden = !state.loading;
+  elements.content.setAttribute("aria-busy", String(state.loading));
+  elements.loading.hidden = !(state.loading && state.loadingVisible);
   elements.error.hidden = !showError;
   elements.empty.hidden = !showEmpty;
   elements.ready.hidden = !showReady;
@@ -349,7 +388,9 @@ function resetFilters() {
 
 async function loadInitialRecords() {
   state.loading = true;
+  state.loadingVisible = false;
   state.error = null;
+  scheduleLoadingIndicator();
   render();
 
   try {
@@ -367,6 +408,8 @@ async function loadInitialRecords() {
     state.error = error instanceof Error
       ? error.message
       : "Không thể tải dữ liệu giao dịch.";
+  } finally {
+    stopLoadingIndicator();
   }
 
   render();
@@ -381,18 +424,21 @@ async function restoreDefaultRecords() {
 
   const previousRecords = state.records;
   state.loading = true;
+  state.loadingVisible = true;
   state.error = null;
   render();
 
   try {
     state.records = await fetchDefaultRecords();
     state.loading = false;
+    state.loadingVisible = false;
     persistRecords();
     resetFilters();
     showToast(`Đã khôi phục ${state.records.length} giao dịch mẫu.`);
   } catch (error) {
     state.records = previousRecords;
     state.loading = false;
+    state.loadingVisible = false;
     render();
     showToast(
       error instanceof Error
@@ -536,5 +582,4 @@ elements.form.addEventListener("submit", (event) => {
 });
 
 elements.formDate.value = todayForInput();
-render();
 loadInitialRecords();

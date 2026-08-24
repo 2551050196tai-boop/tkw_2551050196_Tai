@@ -10,12 +10,28 @@
     />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 
+    <script defer src="./js/app.js"></script>
+    <script type="module" src="./js/records.js" fetchpriority="high"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    />
+    <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all';this.onload=null"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
     <script>
       (function () {
@@ -261,13 +277,20 @@
           </div>
         </div>
 
-        <div class="mt-8">
+        <div id="records-content" class="mt-8" aria-busy="true">
+          <noscript>
+            <div class="rounded-card border border-danger bg-surface p-6 text-danger" role="alert">
+              Trang Sổ giao dịch cần JavaScript để tải và quản lý dữ liệu.
+            </div>
+          </noscript>
+
           <div
             id="records-loading"
             class="rounded-card border border-line bg-surface p-6 shadow-sm"
             role="status"
             aria-live="polite"
             aria-atomic="true"
+            hidden
           >
             <p class="font-display text-lg font-bold">Đang tải dữ liệu giao dịch…</p>
             <p class="mt-1 text-sm text-muted">Vui lòng chờ trong giây lát.</p>
@@ -553,8 +576,5 @@
       </svg>
     </button>
 
-    <script src="./js/app.js"></script>
-    <script type="module" src="./js/main.js"></script>
-    <script type="module" src="./js/records.js"></script>
   </body>
 </html>

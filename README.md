@@ -53,7 +53,7 @@ npm run dev
 
 Lighthouse mobile chạy cục bộ ngày 24/08/2026:
 
-- `records.html`: Performance **98**, Accessibility **100**.
+- `records.html`: Performance **100**, Accessibility **100**.
 - `contact.html`: Performance **91**, Accessibility **100**.
 
 Các luồng tìm kiếm, kết hợp bộ lọc/sắp xếp, trạng thái rỗng, thêm và lưu lại sau khi tải trang, validation lỗi/thành công cũng đã được kiểm tra trực tiếp trên trình duyệt. Console không có lỗi hoặc cảnh báo.
