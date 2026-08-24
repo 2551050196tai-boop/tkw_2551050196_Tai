@@ -3,576 +3,693 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quản lý bán hàng - Landwind</title>
-    <!-- Link font từ Google Fonts -->
+    <title>Landwind — Phần mềm quản lý bán hàng toàn diện</title>
+    <meta name="description" content="Giải pháp quản lý bán hàng, tồn kho và doanh thu chuyên nghiệp cho doanh nghiệp vừa và nhỏ." />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <!-- Link file CSS đã build -->
-    <link rel="stylesheet" href="./dist/output.css" />
+
+    <!-- BUỔI 4 · Tiết 3: Script inline chống nháy trắng (FOUC) & Công tắc Dark/Light Mode -->
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var saved = null;
+        try { saved = localStorage.getItem("theme"); } catch (e) {}
+        var dark = saved
+          ? saved === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        root.classList.toggle("dark", dark);
+        root.classList.add("js");
+
+        // Hàm bật/tắt Light mode & Dark mode hỗ trợ cả khi mở trực tiếp file://
+        window.toggleTheme = function () {
+          if (window.__THEME_INIT__) return;
+          var isDark = root.classList.toggle("dark");
+          try { localStorage.setItem("theme", isDark ? "dark" : "light"); } catch (err) {}
+          var btn = document.getElementById("nut-nen-toi");
+          if (btn) {
+            btn.setAttribute("aria-pressed", String(isDark));
+            btn.setAttribute("aria-label", isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối");
+          }
+        };
+
+        // Fallback: nếu mở trực tiếp bằng file:// khiến module bị CORS chặn
+        setTimeout(function () {
+          if (!window.__MAIN_JS_LOADED__) {
+            var reveals = document.querySelectorAll("[data-reveal]");
+            for (var i = 0; i < reveals.length; i++) {
+              reveals[i].classList.add("is-visible");
+            }
+          }
+        }, 200);
+      })();
+    </script>
+
+    <!-- File CSS đã build -->
+    <link rel="stylesheet" href="./dist/output.css?v=3" />
+
+    <style>
+      /* Đảm bảo các ô hình chữ nhật nổi bật rõ nét tuyệt đối ở Light Mode */
+      :root:not(.dark) .card {
+        background-color: #f8fafc !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.08) !important;
+      }
+      :root:not(.dark) .card:hover {
+        background-color: #ffffff !important;
+        border-color: #94a3b8 !important;
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.12) !important;
+      }
+      :root:not(.dark) .box-bang-so-sanh {
+        background-color: #f8fafc !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.08) !important;
+      }
+      /* Giữ nguyên 100% Dark Mode */
+      .dark .card {
+        background-color: #1a2f2a !important;
+        border: 1px solid #24403a !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+      .dark .box-bang-so-sanh {
+        background-color: #1a2f2a !important;
+        border: 1px solid #24403a !important;
+        box-shadow: none !important;
+      }
+      /* Nút gạt chuyển đổi giá Tháng / Năm căn giữa chuẩn và gạt mượt sang phải */
+      .cong-tac {
+        position: relative !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        height: 28px !important;
+        width: 48px !important;
+        flex-shrink: 0 !important;
+        border-radius: 9999px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #cbd5e1 !important;
+        padding: 0 !important;
+        cursor: pointer !important;
+        transition: background-color 0.25s ease, border-color 0.25s ease !important;
+      }
+      .dark .cong-tac {
+        background-color: #334155 !important;
+        border-color: #475569 !important;
+      }
+      .cong-tac[aria-checked="true"] {
+        background-color: #2563eb !important;
+        border-color: #2563eb !important;
+      }
+      .dark .cong-tac[aria-checked="true"] {
+        background-color: #2563eb !important;
+        border-color: #2563eb !important;
+      }
+      .cong-tac-num {
+        position: absolute !important;
+        top: 3px !important;
+        left: 3px !important;
+        height: 20px !important;
+        width: 20px !important;
+        border-radius: 9999px !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2) !important;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        pointer-events: none !important;
+        transform: translateX(0) !important;
+      }
+      .cong-tac[aria-checked="true"] .cong-tac-num {
+        transform: translateX(20px) !important;
+      }
+    </style>
   </head>
-  <body class="font-body text-ink bg-white">
-    <div id="nav-sentinel" aria-hidden="true" class="h-px"></div>
-    <!-- 1. NAVBAR (Buổi 1) -->
-    <header id="site-header" class="sticky top-0 z-50 py-4 border-b border-line bg-white transition-shadow">
-      <div
-        class="mx-auto w-full max-w-6xl px-5 flex items-center justify-between"
-      >
-        <a href="#" class="font-display font-bold text-2xl text-brand-600"
-          >Landwind</a
-        >
-        <nav class="hidden md:flex gap-8 font-medium">
-          <a href="product.html" class="hover:text-brand-600">Sản phẩm</a>
-          <a href="price.html" class="hover:text-brand-600">Bảng giá</a>
-          <a href="documents.html" class="hover:text-brand-600">Tài liệu</a>
+  <body class="font-body text-ink bg-surface antialiased">
+    <!-- BUỔI 4 · Tính năng 2 — mốc theo dõi cuộn trang -->
+    <div id="nav-sentinel" aria-hidden="true" class="h-px w-full"></div>
+
+    <!-- Link bỏ qua điều hướng cho bàn phím (WCAG 2.4.1) -->
+    <a href="#main"
+       class="btn btn-primary sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50">
+      Bỏ qua đến nội dung chính
+    </a>
+
+    <!-- ============================================================
+         1. NAVBAR & HEADER
+         ============================================================ -->
+    <header id="site-header" class="sticky top-0 z-50 border-b border-line bg-surface/90 backdrop-blur transition-shadow">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <span class="grid h-9 w-9 place-items-center rounded-lg bg-brand-600 font-display text-lg font-extrabold text-white">L</span>
+          <span class="font-display text-2xl font-bold text-brand-600 dark:text-brand-300">Landwind</span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden items-center gap-8 text-sm font-medium md:flex" aria-label="Điều hướng chính">
+          <a href="product.html" class="link-nav">Sản phẩm</a>
+          <a href="pricing.html" class="link-nav">Bảng giá</a>
+          <a href="documents.html" class="link-nav">Tài liệu</a>
+          <a href="./records.html" class="link-nav">Sổ giao dịch</a>
+          <a href="contact.html" class="link-nav">Liên hệ</a>
         </nav>
-        <div class="flex items-center gap-4">
-          <a href="#" class="font-medium">Đăng nhập</a>
-          <a
-            href="#"
-            class="bg-brand-600 text-white px-5 py-2 rounded-lg font-medium"
-            >Bắt đầu</a
-          >
-          <button type="button" class="inline-grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-brand-50 md:hidden" aria-controls="nav-mobile" aria-expanded="false" aria-label="Mở menu">
-            <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+
+        <div class="flex items-center gap-3">
+          <a href="contact.html" class="hidden text-sm font-medium sm:block link-nav">Đăng nhập</a>
+          <a href="pricing.html" class="btn btn-primary text-sm">Bắt đầu</a>
+
+          <!-- BUỔI 4 · Tính năng 4 — Nút công tắc nền sáng / tối -->
+          <button type="button" id="nut-nen-toi" onclick="toggleTheme()"
+                  class="grid h-10 w-10 place-items-center rounded-pill border border-line text-ink hover:bg-surface-alt transition-colors cursor-pointer"
+                  aria-pressed="false" aria-label="Chuyển nền sáng / nền tối">
+            <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+            <svg class="hidden h-5 w-5 dark:block text-brand-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
+            </svg>
+          </button>
+
+          <!-- BUỔI 4 · Tính năng 1 — Nút mở menu mobile -->
+          <button type="button"
+                  class="grid h-10 w-10 place-items-center rounded-pill border border-line md:hidden hover:bg-surface-alt cursor-pointer"
+                  aria-controls="nav-mobile" aria-expanded="false" aria-label="Mở menu">
+            <svg aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
         </div>
       </div>
-      <nav id="nav-mobile" class="hidden border-t border-line bg-white px-5 py-4 md:hidden" aria-label="Mobile navigation">
+
+      <!-- Menu mobile -->
+      <nav id="nav-mobile" class="hidden border-t border-line bg-surface px-5 py-4 md:hidden" aria-label="Điều hướng trên điện thoại">
         <div class="mx-auto flex w-full max-w-6xl flex-col gap-1 font-medium">
-          <a href="product.html" class="rounded-lg px-4 py-3 hover:bg-brand-50">Sản phẩm</a>
-          <a href="price.html" class="rounded-lg px-4 py-3 hover:bg-brand-50">Bảng giá</a>
-          <a href="documents.html" class="rounded-lg px-4 py-3 hover:bg-brand-50">Tài liệu</a>
+          <a href="product.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Sản phẩm</a>
+          <a href="pricing.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Bảng giá</a>
+          <a href="documents.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Tài liệu</a>
+          <a href="./records.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Sổ giao dịch</a>
+          <a href="contact.html" class="rounded-lg px-4 py-3 hover:bg-surface-alt">Liên hệ</a>
+          <a href="pricing.html" class="btn btn-primary mt-2 w-full">Dùng thử 14 ngày</a>
         </div>
       </nav>
     </header>
 
-    <!-- 2. HERO SECTION (Buổi 1) -->
-    <section class="py-24 bg-surface">
-      <div
-        class="mx-auto w-full max-w-6xl px-5 grid gap-12 lg:grid-cols-2 items-center"
-      >
-        <div class="flex flex-col gap-6">
-          <h1 class="font-display text-5xl font-extrabold leading-tight">
-            Giải pháp quản lý bán hàng toàn diện
-          </h1>
-          <p class="text-muted text-lg">
-            Tự động hóa quy trình, tối ưu doanh thu và quản lý kho hàng chỉ với
-            vài cú click chuột.
-          </p>
-          <div class="flex gap-4">
-            <a
-              href="#"
-              class="bg-brand-600 text-white px-6 py-3 rounded-lg font-medium"
-              >Dùng thử miễn phí</a
-            >
+    <main id="main">
+      <!-- ============================================================
+           2. HERO SECTION
+           ============================================================ -->
+      <section data-reveal class="py-20 lg:py-24">
+        <div class="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 lg:grid-cols-2">
+          <div class="flex flex-col gap-6">
+            <span class="eyebrow">Giải pháp số 1 cho cửa hàng bán lẻ</span>
+            <h1 class="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+              Giải pháp quản lý bán hàng toàn diện
+            </h1>
+            <p class="text-lg text-muted">
+              Tự động hóa quy trình, tối ưu doanh thu và quản lý kho hàng chỉ với
+              vài cú click chuột. Giúp bạn tiết kiệm 15 giờ làm việc mỗi tuần.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-2">
+              <a href="pricing.html" class="btn btn-primary btn-lg">Dùng thử miễn phí</a>
+              <a href="contact.html" class="btn btn-ghost btn-lg">Liên hệ tư vấn</a>
+            </div>
+          </div>
+          <div class="flex items-center justify-center rounded-card border border-line bg-surface-alt p-4 dark:border-line-invert dark:bg-surface-dark-alt">
+            <img src="quan-ly-b-1.webp" alt="Giao diện quản lý bán hàng Landwind" width="1728" height="964" class="rounded-lg shadow-sm w-full h-auto object-cover max-h-96" />
           </div>
         </div>
-        <div
-          class="bg-line h-80 rounded-card flex items-center justify-center text-muted"
-        >
-          <img src="quan-ly-b-1.webp" alt="hình ảnh quản lý" />
+      </section>
+
+      <!-- ============================================================
+           3. DẢI ĐỐI TÁC / KHÁCH HÀNG
+           ============================================================ -->
+      <section data-reveal class="border-y border-line py-12 bg-surface-alt dark:bg-surface-dark-alt">
+        <div class="mx-auto w-full max-w-6xl px-5">
+          <p class="text-center text-xs font-semibold uppercase tracking-wider text-muted mb-6">
+            Hơn 340+ chuỗi cửa hàng và doanh nghiệp tin dùng
+          </p>
+          <ul class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 opacity-70">
+            <li class="font-display text-xl font-bold tracking-tight text-ink">Highlands</li>
+            <li class="font-display text-xl font-bold tracking-tight text-ink">Phúc Long</li>
+            <li class="font-display text-xl font-bold tracking-tight text-ink">WinMart</li>
+            <li class="font-display text-xl font-bold tracking-tight text-ink">Bách Hóa Xanh</li>
+            <li class="font-display text-xl font-bold tracking-tight text-ink">Co.opmart</li>
+          </ul>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 3. DẢI KHÁCH HÀNG (Buổi 2 - Tiết 2) -->
-    <section class="py-24 border-b border-line">
-      <div class="mx-auto w-full max-w-6xl px-5">
-        <ul class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
-          <li class="text-xl font-bold text-muted">Google</li>
-          <li class="text-xl font-bold text-muted">Microsoft</li>
-          <li class="text-xl font-bold text-muted">Spotify</li>
-          <li class="text-xl font-bold text-muted">Amazon</li>
-          <li class="text-xl font-bold text-muted">Airbnb</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- BÀI TẬP VỀ NHÀ: SECTION "CÁCH HOẠT ĐỘNG" (Bổ sung) -->
-    <!-- Sử dụng chung hệ token: nhịp py-24, gap, container chuẩn -->
-    <section class="py-24 bg-surface">
-      <div class="mx-auto w-full max-w-6xl px-5">
-        <div class="text-center max-w-2xl mx-auto flex flex-col gap-4">
-          <h2 class="font-display text-4xl font-bold">
+      <!-- ============================================================
+           4. CÁCH HOẠT ĐỘNG (3 BƯỚC)
+           ============================================================ -->
+      <section data-reveal class="section" id="cach-hoat-dong">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="eyebrow">Quy trình đơn giản</p>
+          <h2 class="mt-3 font-display text-3xl font-bold sm:text-4xl">
             3 Bước Bắt Đầu Đơn Giản
           </h2>
-          <p class="text-muted">
-            Hệ thống được thiết kế để bạn làm quen và triển khai nhanh chóng
-            nhất có thể.
+          <p class="mt-4 text-muted">
+            Hệ thống được thiết kế để bạn làm quen và triển khai nhanh chóng nhất có thể.
           </p>
         </div>
-        <ul class="mt-14 grid gap-8 md:grid-cols-3 relative">
-          <li class="flex flex-col gap-4 items-center text-center">
-            <span
-              class="font-display text-4xl font-extrabold text-brand-50 mb-2"
-              style="color: var(--color-brand-600); opacity: 0.2"
-              >01</span
-            >
-            <h3 class="text-xl font-bold">Tạo tài khoản</h3>
-            <p class="text-muted">
-              Đăng ký tài khoản miễn phí chỉ trong 2 phút.
+        <ol class="mt-14 grid gap-8 md:grid-cols-3">
+          <li class="card relative">
+            <span class="badge">Bước 01</span>
+            <h3 class="mt-2 text-xl font-bold">Tạo tài khoản</h3>
+            <p class="mt-3 text-muted">
+              Đăng ký tài khoản miễn phí chỉ trong 2 phút, không cần thẻ tín dụng.
             </p>
           </li>
-          <li class="flex flex-col gap-4 items-center text-center">
-            <span
-              class="font-display text-4xl font-extrabold text-brand-50 mb-2"
-              style="color: var(--color-brand-600); opacity: 0.2"
-              >02</span
-            >
-            <h3 class="text-xl font-bold">Nhập dữ liệu</h3>
-            <p class="text-muted">
-              Đồng bộ sản phẩm từ Excel hoặc nhập thủ công.
+          <li class="card relative">
+            <span class="badge">Bước 02</span>
+            <h3 class="mt-2 text-xl font-bold">Nhập dữ liệu</h3>
+            <p class="mt-3 text-muted">
+              Đồng bộ danh mục sản phẩm từ Excel hoặc nhập nhanh trên điện thoại.
             </p>
           </li>
-          <li class="flex flex-col gap-4 items-center text-center">
-            <span
-              class="font-display text-4xl font-extrabold text-brand-50 mb-2"
-              style="color: var(--color-brand-600); opacity: 0.2"
-              >03</span
-            >
-            <h3 class="text-xl font-bold">Bắt đầu bán</h3>
-            <p class="text-muted">
-              Lên đơn, in hóa đơn và quản lý doanh thu ngay.
+          <li class="card relative">
+            <span class="badge">Bước 03</span>
+            <h3 class="mt-2 text-xl font-bold">Bắt đầu bán</h3>
+            <p class="mt-3 text-muted">
+              Lên đơn, in hóa đơn kết nối máy in nhiệt và quản lý dòng tiền tức thì.
             </p>
           </li>
-        </ul>
-      </div>
-    </section>
+        </ol>
+      </section>
 
-    <!-- 4. LƯỚI TÍNH NĂNG (Buổi 2 - Tiết 2) -->
-    <section class="py-24">
-      <div class="mx-auto w-full max-w-6xl px-5">
-        <div class="text-center max-w-2xl mx-auto flex flex-col gap-4">
-          <h2 class="font-display text-4xl font-bold">Tính năng nổi bật</h2>
-          <p class="text-muted">
-            Mọi thứ bạn cần để vận hành cửa hàng trơn tru đều có tại đây.
+      <!-- ============================================================
+           5. LƯỚI TÍNH NĂNG NỔI BẬT
+           ============================================================ -->
+      <section data-reveal class="section border-t border-line" id="tinh-nang">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="eyebrow">Tính năng mạnh mẽ</p>
+          <h2 class="mt-3 font-display text-3xl font-bold sm:text-4xl">Mọi công cụ bạn cần</h2>
+          <p class="mt-4 text-muted">
+            Tất cả nghiệp vụ bán hàng, kho bãi và thu chi được đồng bộ theo thời gian thực.
           </p>
         </div>
         <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Thẻ 1 -->
-          <li class="flex flex-col gap-3">
-            <span
-              class="grid h-11 w-11 place-items-center rounded-lg bg-brand-50 text-brand-600"
-            >
-              <svg
-                aria-hidden="true"
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                ></path>
+          <li class="card">
+            <div class="mb-4 grid h-12 w-12 place-items-center rounded-lg bg-brand-50 text-brand-600 dark:bg-surface-dark dark:text-brand-300">
+              <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
-            </span>
+            </div>
             <h3 class="text-xl font-bold">Quản lý tồn kho</h3>
-            <p class="text-muted">
-              Cập nhật số lượng theo thời gian thực, cảnh báo sắp hết hàng.
-            </p>
+            <p class="mt-2 text-muted">Cập nhật số lượng theo thời gian thực, cảnh báo tự động khi sắp hết hàng.</p>
           </li>
-          <!-- Thẻ 2 -->
-          <li class="flex flex-col gap-3">
-            <span
-              class="grid h-11 w-11 place-items-center rounded-lg bg-brand-50 text-brand-600"
-            >
-              <svg
-                aria-hidden="true"
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6"
-                ></path>
+          <li class="card">
+            <div class="mb-4 grid h-12 w-12 place-items-center rounded-lg bg-brand-50 text-brand-600 dark:bg-surface-dark dark:text-brand-300">
+              <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-            </span>
+            </div>
             <h3 class="text-xl font-bold">Báo cáo doanh thu</h3>
-            <p class="text-muted">
-              Biểu đồ trực quan giúp bạn nắm bắt dòng tiền mỗi ngày.
-            </p>
+            <p class="mt-2 text-muted">Biểu đồ trực quan giúp bạn nắm bắt dòng tiền, lợi nhuận và xu hướng mỗi ngày.</p>
           </li>
-          <!-- Thẻ 3 -->
-          <li class="flex flex-col gap-3">
-            <span
-              class="grid h-11 w-11 place-items-center rounded-lg bg-brand-50 text-brand-600"
-            >
-              <svg
-                aria-hidden="true"
-                class="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                ></path>
+          <li class="card">
+            <div class="mb-4 grid h-12 w-12 place-items-center rounded-lg bg-brand-50 text-brand-600 dark:bg-surface-dark dark:text-brand-300">
+              <svg aria-hidden="true" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
-            </span>
+            </div>
             <h3 class="text-xl font-bold">Phân quyền nhân viên</h3>
-            <p class="text-muted">
-              Bảo mật thông tin bằng cách giới hạn quyền truy cập riêng biệt.
-            </p>
+            <p class="mt-2 text-muted">Bảo mật thông tin bằng cách giới hạn quyền xem báo cáo hoặc sửa giá bán.</p>
           </li>
         </ul>
-      </div>
-    </section>
+      </section>
 
-    <!-- 5. CẢM NHẬN KHÁCH HÀNG (Buổi 2 - Tiết 3) -->
-    <section class="py-24 bg-surface">
-      <div class="mx-auto w-full max-w-6xl px-5">
-        <figure
-          class="mx-auto max-w-screen-md text-center flex flex-col items-center gap-8"
-        >
-          <svg
-            aria-hidden="true"
-            class="w-10 h-10 text-muted"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M14.017 18L14.017 21L16.243 21C20.407 21 23.479 17.659 23.479 13.047C23.479 9.074 20.89 6 16.924 6C16.326 6 15.753 6.084 15.207 6.243L15.932 8.163C16.255 8.084 16.591 8.04 16.924 8.04C19.336 8.04 21.066 9.947 21.066 12.63C21.066 15.485 19.467 17.202 16.994 17.202L16.242 17.202L14.017 18ZM4.949 18L4.949 21L7.175 21C11.339 21 14.411 17.659 14.411 13.047C14.411 9.074 11.822 6 7.856 6C7.258 6 6.685 6.084 6.139 6.243L6.864 8.163C7.187 8.084 7.523 8.04 7.856 8.04C10.268 8.04 11.998 9.947 11.998 12.63C11.998 15.485 10.399 17.202 7.926 17.202L7.174 17.202L4.949 18Z"
-            />
-          </svg>
-          <blockquote class="text-2xl font-medium text-ink leading-relaxed">
-            "Trước đây tối nào tôi cũng ngồi cộng số tới 9 giờ tối. Từ khi dùng
-            hệ thống này, việc chốt ca chỉ mất đúng 5 phút. Thực sự rất đáng
-            tiền!"
-          </blockquote>
-          <figcaption class="flex items-center gap-4">
-            <div
-              class="w-12 h-12 rounded-full bg-line flex items-center justify-center font-bold text-muted"
-            >
-              A
-            </div>
-            <div class="text-left flex flex-col">
-              <span class="font-bold text-ink">Nguyễn Văn A</span>
-              <cite class="not-italic text-sm text-muted"
-                >Chủ chuỗi trà sữa, TP.HCM</cite
-              >
-            </div>
-          </figcaption>
-        </figure>
-      </div>
-    </section>
+      <!-- ============================================================
+           6. CẢM NHẬN KHÁCH HÀNG — BUỔI 4 · Tính năng 6 (Slider tự viết)
+           ============================================================ -->
+      <section data-reveal class="section bg-surface-alt dark:bg-surface-dark-alt rounded-card my-12" id="cam-nhan">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="eyebrow">Đánh giá từ người dùng</p>
+          <h2 class="mt-3 font-display text-3xl font-bold sm:text-4xl">Người dùng nói gì về Landwind</h2>
+        </div>
 
-    <!-- 6. KHỐI SỐ LIỆU (Buổi 2 - Tiết 3) -->
-    <section class="py-24 border-b border-line">
-      <div class="mx-auto w-full max-w-6xl px-5">
-        <dl
-          class="grid grid-cols-1 gap-8 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line"
-        >
-          <div class="text-center flex flex-col">
-            <dt class="order-2 mt-2 text-sm font-medium text-muted">
-              Vựa đang dùng hằng ngày
-            </dt>
-            <dd class="font-display text-5xl font-extrabold text-brand-600">
-              340+
-            </dd>
+        <div id="slider-camnhan" class="mt-12" role="group" aria-roledescription="băng chuyền"
+             aria-label="Cảm nhận người dùng" tabindex="0">
+          <div class="slider-viewport">
+            <ul class="slider-track" data-slider-track>
+              <li class="slider-slide" data-slide>
+                <figure class="card mx-auto max-w-2xl text-center flex flex-col items-center gap-6">
+                  <svg aria-hidden="true" class="w-10 h-10 text-muted opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 18L14.017 21L16.243 21C20.407 21 23.479 17.659 23.479 13.047C23.479 9.074 20.89 6 16.924 6C16.326 6 15.753 6.084 15.207 6.243L15.932 8.163C16.255 8.084 16.591 8.04 16.924 8.04C19.336 8.04 21.066 9.947 21.066 12.63C21.066 15.485 19.467 17.202 16.994 17.202L16.242 17.202L14.017 18ZM4.949 18L4.949 21L7.175 21C11.339 21 14.411 17.659 14.411 13.047C14.411 9.074 11.822 6 7.856 6C7.258 6 6.753 6.084 6.207 6.243L6.932 8.163C7.255 8.084 7.591 8.04 7.924 8.04C10.336 8.04 12.066 9.947 12.066 12.63C12.066 15.485 10.467 17.202 7.994 17.202L7.242 17.202L4.949 18Z" />
+                  </svg>
+                  <blockquote class="text-xl sm:text-2xl font-medium leading-relaxed text-ink">
+                    "Trước đây tối nào tôi cũng ngồi cộng sổ tới 9 giờ tối. Từ khi dùng Landwind, việc chốt ca chỉ mất đúng 5 phút. Thực sự rất đáng giá!"
+                  </blockquote>
+                  <figcaption class="flex items-center gap-3">
+                    <div class="grid h-11 w-11 place-items-center rounded-full bg-brand-50 font-bold text-brand-600 dark:bg-surface-dark dark:text-brand-300">A</div>
+                    <div class="text-left">
+                      <span class="font-bold text-ink block">Nguyễn Văn A</span>
+                      <cite class="not-italic text-sm text-muted">Chủ chuỗi trà sữa, TP.HCM</cite>
+                    </div>
+                  </figcaption>
+                </figure>
+              </li>
+
+              <li class="slider-slide" data-slide>
+                <figure class="card mx-auto max-w-2xl text-center flex flex-col items-center gap-6">
+                  <svg aria-hidden="true" class="w-10 h-10 text-muted opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 18L14.017 21L16.243 21C20.407 21 23.479 17.659 23.479 13.047C23.479 9.074 20.89 6 16.924 6C16.326 6 15.753 6.084 15.207 6.243L15.932 8.163C16.255 8.084 16.591 8.04 16.924 8.04C19.336 8.04 21.066 9.947 21.066 12.63C21.066 15.485 19.467 17.202 16.994 17.202L16.242 17.202L14.017 18ZM4.949 18L4.949 21L7.175 21C11.339 21 14.411 17.659 14.411 13.047C14.411 9.074 11.822 6 7.856 6C7.258 6 6.753 6.084 6.207 6.243L6.932 8.163C7.255 8.084 7.591 8.04 7.924 8.04C10.336 8.04 12.066 9.947 12.066 12.63C12.066 15.485 10.467 17.202 7.994 17.202L7.242 17.202L4.949 18Z" />
+                  </svg>
+                  <blockquote class="text-xl sm:text-2xl font-medium leading-relaxed text-ink">
+                    "Báo cáo doanh thu tự động giúp tôi biết ngay mặt hàng nào đang bán chạy nhất trong ngày để kịp thời nhập thêm hàng."
+                  </blockquote>
+                  <figcaption class="flex items-center gap-3">
+                    <div class="grid h-11 w-11 place-items-center rounded-full bg-brand-50 font-bold text-brand-600 dark:bg-surface-dark dark:text-brand-300">B</div>
+                    <div class="text-left">
+                      <span class="font-bold text-ink block">Trần Thị B</span>
+                      <cite class="not-italic text-sm text-muted">Chủ siêu thị mini, Cần Thơ</cite>
+                    </div>
+                  </figcaption>
+                </figure>
+              </li>
+
+              <li class="slider-slide" data-slide>
+                <figure class="card mx-auto max-w-2xl text-center flex flex-col items-center gap-6">
+                  <svg aria-hidden="true" class="w-10 h-10 text-muted opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 18L14.017 21L16.243 21C20.407 21 23.479 17.659 23.479 13.047C23.479 9.074 20.89 6 16.924 6C16.326 6 15.753 6.084 15.207 6.243L15.932 8.163C16.255 8.084 16.591 8.04 16.924 8.04C19.336 8.04 21.066 9.947 21.066 12.63C21.066 15.485 19.467 17.202 16.994 17.202L16.242 17.202L14.017 18ZM4.949 18L4.949 21L7.175 21C11.339 21 14.411 17.659 14.411 13.047C14.411 9.074 11.822 6 7.856 6C7.258 6 6.753 6.084 6.207 6.243L6.932 8.163C7.255 8.084 7.591 8.04 7.924 8.04C10.336 8.04 12.066 9.947 12.066 12.63C12.066 15.485 10.467 17.202 7.994 17.202L7.242 17.202L4.949 18Z" />
+                  </svg>
+                  <blockquote class="text-xl sm:text-2xl font-medium leading-relaxed text-ink">
+                    "Nhân viên mới chỉ cần 15 phút làm quen là đã thao tác thanh toán thành thạo. Giao diện cực kỳ thân thiện."
+                  </blockquote>
+                  <figcaption class="flex items-center gap-3">
+                    <div class="grid h-11 w-11 place-items-center rounded-full bg-brand-50 font-bold text-brand-600 dark:bg-surface-dark dark:text-brand-300">C</div>
+                    <div class="text-left">
+                      <span class="font-bold text-ink block">Lê Văn C</span>
+                      <cite class="not-italic text-sm text-muted">Quản lý cửa hàng thời trang, Đà Nẵng</cite>
+                    </div>
+                  </figcaption>
+                </figure>
+              </li>
+            </ul>
           </div>
-          <div class="text-center flex flex-col pt-8 sm:pt-0">
-            <dt class="order-2 mt-2 text-sm font-medium text-muted">
-              Hóa đơn xuất mỗi tháng
-            </dt>
-            <dd class="font-display text-5xl font-extrabold text-brand-600">
-              1M+
-            </dd>
+
+          <!-- Các chấm phân trang do JavaScript tự sinh -->
+          <div class="mt-6 flex items-center justify-center gap-2" data-slider-dots></div>
+
+          <!-- Nút điều hướng prev / next -->
+          <div class="mt-6 flex items-center justify-center gap-3">
+            <button type="button" data-slider-prev class="slider-nav" aria-label="Cảm nhận trước">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <button type="button" data-slider-next class="slider-nav" aria-label="Cảm nhận tiếp theo">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
           </div>
-          <div class="text-center flex flex-col pt-8 sm:pt-0">
-            <dt class="order-2 mt-2 text-sm font-medium text-muted">
-              Đánh giá 5 sao
-            </dt>
-            <dd class="font-display text-5xl font-extrabold text-brand-600">
-              99%
-            </dd>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           7. KHỐI SỐ LIỆU THỐNG KÊ
+           ============================================================ -->
+      <section data-reveal class="section border-b border-line">
+        <dl class="grid grid-cols-1 gap-8 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line text-center">
+          <div class="flex flex-col">
+            <dd class="font-display text-5xl font-extrabold text-brand-600 dark:text-brand-300">340+</dd>
+            <dt class="mt-2 text-sm font-medium text-muted">Cửa hàng đang sử dụng</dt>
+          </div>
+          <div class="flex flex-col pt-8 sm:pt-0">
+            <dd class="font-display text-5xl font-extrabold text-brand-600 dark:text-brand-300">1M+</dd>
+            <dt class="mt-2 text-sm font-medium text-muted">Hóa đơn xử lý mỗi tháng</dt>
+          </div>
+          <div class="flex flex-col pt-8 sm:pt-0">
+            <dd class="font-display text-5xl font-extrabold text-brand-600 dark:text-brand-300">99.8%</dd>
+            <dt class="mt-2 text-sm font-medium text-muted">Tỷ lệ hài lòng từ khách hàng</dt>
           </div>
         </dl>
-      </div>
-    </section>
+      </section>
 
-    <!-- 7. BẢNG GIÁ (Buổi 2 - Tiết 4) -->
-    <section class="py-24 bg-surface">
-      <div class="mx-auto w-full max-w-6xl px-5">
-        <div class="text-center max-w-2xl mx-auto flex flex-col gap-4 mb-14">
-          <h2 class="font-display text-4xl font-bold">Bảng giá minh bạch</h2>
-          <p class="text-muted">
-            Không phụ phí ẩn. Chọn gói phù hợp với quy mô cửa hàng của bạn.
-          </p>
+      <!-- ============================================================
+           8. BẢNG GIÁ — BUỔI 4 · Tính năng 5 (Công tắc Tháng / Năm)
+           ============================================================ -->
+      <section data-reveal class="section" id="bang-gia">
+        <div class="mx-auto max-w-2xl text-center mb-10">
+          <p class="eyebrow">Chi phí rõ ràng</p>
+          <h2 class="mt-3 font-display text-3xl font-bold sm:text-4xl">Bảng giá minh bạch</h2>
+          <p class="mt-4 text-muted">Không chi phí ẩn. Chọn gói dịch vụ phù hợp nhất với quy mô kinh doanh của bạn.</p>
         </div>
+
+        <!-- BUỔI 4 · Tính năng 5 — Công tắc switch -->
+        <div class="mb-12 flex items-center justify-center gap-3">
+          <span id="nhan-thang" class="text-sm font-medium cursor-pointer select-none transition-colors">Trả theo tháng</span>
+          <button type="button" id="cong-tac-gia" role="switch" aria-checked="false"
+                  aria-labelledby="nhan-thang nhan-nam"
+                  class="cong-tac aria-checked:bg-brand-600">
+            <span class="cong-tac-num" aria-hidden="true"></span>
+          </button>
+          <span id="nhan-nam" class="text-sm font-medium cursor-pointer select-none transition-colors">
+            Trả theo năm
+            <span class="ml-1 rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-bold text-brand-600 dark:bg-surface-dark dark:text-brand-300">
+              Tiết kiệm 20%
+            </span>
+          </span>
+        </div>
+
         <ul class="grid items-stretch gap-6 lg:grid-cols-3">
-          <!-- Gói 1 -->
-          <li
-            class="card flex h-full flex-col bg-white p-8 rounded-card border border-line"
-          >
+          <!-- Gói Cơ bản -->
+          <li class="card">
             <h3 class="text-2xl font-bold">Cơ bản</h3>
             <p class="mt-4">
-              <span class="text-4xl font-display font-extrabold">Miễn phí</span>
+              <span class="font-display text-4xl font-extrabold" data-price data-monthly="0" aria-live="polite">Miễn phí</span>
             </p>
-            <ul class="mt-8 mb-8 flex flex-col gap-4 text-muted">
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
+            <p class="mt-2 text-sm text-muted">Dành cho cá nhân mới mở cửa hàng nhỏ.</p>
+            <ul class="my-8 flex flex-col gap-3.5 text-sm text-muted">
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 1 người dùng
               </li>
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
-                Quản lý 50 sản phẩm
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Quản lý tối đa 50 sản phẩm
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Báo cáo cơ bản
               </li>
             </ul>
-            <a
-              href="#"
-              class="mt-auto block w-full py-3 px-4 text-center rounded-lg font-bold bg-brand-50 text-brand-600 hover:bg-line transition"
-              >Bắt đầu ngay</a
-            >
+            <a href="contact.html" class="btn btn-ghost mt-auto w-full">Bắt đầu ngay</a>
           </li>
-          <!-- Gói 2: Nổi bật -->
-          <li
-            class="card relative flex h-full flex-col bg-white p-8 rounded-card ring-2 ring-brand-600 shadow-xl"
-          >
-            <span
-              class="absolute -top-3 left-6 bg-brand-600 text-white px-3 py-1 text-sm font-bold rounded-full"
-              >Được chọn nhiều nhất</span
-            >
+
+          <!-- Gói Tiêu chuẩn (Nổi bật) -->
+          <li class="card relative ring-2 ring-brand-600 shadow-xl dark:ring-brand-300">
+            <span class="badge">Được chọn nhiều nhất</span>
             <h3 class="text-2xl font-bold">Tiêu chuẩn</h3>
             <p class="mt-4">
-              <span class="text-4xl font-display font-extrabold">199k</span>
-              <span class="text-muted">/tháng</span>
+              <span class="font-display text-4xl font-extrabold" data-price data-monthly="199000" aria-live="polite">199.000 ₫</span>
+              <span class="text-muted text-sm font-medium" data-price-unit>/tháng</span>
             </p>
-            <ul class="mt-8 mb-8 flex flex-col gap-4 text-muted">
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
-                5 người dùng
+            <p class="mt-2 text-sm text-muted">Dành cho cửa hàng đang hoạt động ổn định.</p>
+            <ul class="my-8 flex flex-col gap-3.5 text-sm text-muted">
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                5 người dùng đồng thời
               </li>
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
-                Không giới hạn sản phẩm
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Không giới hạn sản phẩm & kho
               </li>
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
-                Báo cáo nâng cao
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Báo cáo doanh thu chuyên sâu
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Hỗ trợ kết nối máy in hóa đơn
               </li>
             </ul>
-            <a
-              href="#"
-              class="mt-auto block w-full py-3 px-4 text-center rounded-lg font-bold bg-brand-600 text-white hover:bg-accent-500 transition"
-              >Dùng thử 14 ngày</a
-            >
+            <a href="contact.html" class="btn btn-primary mt-auto w-full">Dùng thử 14 ngày</a>
           </li>
-          <!-- Gói 3 -->
-          <li
-            class="card flex h-full flex-col bg-white p-8 rounded-card border border-line"
-          >
+
+          <!-- Gói Doanh nghiệp -->
+          <li class="card">
             <h3 class="text-2xl font-bold">Doanh nghiệp</h3>
             <p class="mt-4">
-              <span class="text-4xl font-display font-extrabold">Liên hệ</span>
+              <span class="font-display text-4xl font-extrabold" data-price data-monthly="599000" aria-live="polite">599.000 ₫</span>
+              <span class="text-muted text-sm font-medium" data-price-unit>/tháng</span>
             </p>
-            <ul class="mt-8 mb-8 flex flex-col gap-4 text-muted">
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
-                Tùy chỉnh tính năng
+            <p class="mt-2 text-sm text-muted">Dành cho chuỗi nhiều chi nhánh & kho lớn.</p>
+            <ul class="my-8 flex flex-col gap-3.5 text-sm text-muted">
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Không giới hạn người dùng & chi nhánh
               </li>
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
-                Hỗ trợ riêng 24/7
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Tùy chỉnh tính năng theo yêu cầu
               </li>
-              <li class="flex gap-2 items-center">
-                <svg
-                  aria-hidden="true"
-                  class="w-5 h-5 text-accent-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  />
-                </svg>
-                Đào tạo nhân sự
+              <li class="flex items-center gap-2.5">
+                <svg class="h-5 w-5 text-accent-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Đào tạo và hỗ trợ kỹ thuật riêng 24/7
               </li>
             </ul>
-            <a
-              href="#"
-              class="mt-auto block w-full py-3 px-4 text-center rounded-lg font-bold bg-brand-50 text-brand-600 hover:bg-line transition"
-              >Nhận tư vấn</a
-            >
+            <a href="contact.html" class="btn btn-ghost mt-auto w-full">Liên hệ tư vấn</a>
           </li>
         </ul>
-      </div>
-    </section>
+      </section>
 
-    <!-- 8. FAQ (Buổi 2 - Tiết 5) -->
-    <section class="py-24">
-      <div class="mx-auto w-full max-w-6xl px-5">
+      <!-- ============================================================
+           9. FAQ — BUỔI 4 · Tính năng 3 (Accordion câu hỏi)
+           ============================================================ -->
+      <section data-reveal class="section border-t border-line" id="cau-hoi">
         <div class="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
-          <div class="flex flex-col gap-4">
-            <h2 class="text-4xl font-display font-bold">Câu hỏi thường gặp</h2>
-            <p class="text-muted">
-              Nếu không tìm thấy câu trả lời, hãy liên hệ qua email hỗ trợ.
+          <div>
+            <p class="eyebrow">Giải đáp thắc mắc</p>
+            <h2 class="mt-3 font-display text-3xl font-bold sm:text-4xl">Câu hỏi thường gặp</h2>
+            <p class="mt-4 text-muted">
+              Nếu bạn không tìm thấy câu trả lời mong muốn, đừng ngần ngại liên hệ trực tiếp với đội ngũ hỗ trợ.
             </p>
+            <a href="contact.html" class="btn btn-ghost mt-6">Gửi câu hỏi cho chúng tôi</a>
           </div>
-          <div class="flex flex-col gap-8">
-            <div class="flex flex-col gap-2">
-              <h3 class="text-xl font-bold">
-                Phần mềm có dùng được trên điện thoại không?
+
+          <div class="divide-y divide-line">
+            <div class="py-6 first:pt-0 last:pb-0">
+              <h3 class="text-lg font-bold">
+                <button type="button" data-faq-trigger
+                        id="faq-t1" aria-controls="faq-p1" aria-expanded="false"
+                        class="faq-trigger flex w-full items-center justify-between gap-4 text-left">
+                  <span>Phần mềm có dùng được trên điện thoại không?</span>
+                  <svg class="faq-icon h-5 w-5 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
               </h3>
-              <p class="text-muted">
-                Có, hệ thống được thiết kế responsive hoạt động tốt trên cả máy
-                tính, tablet và điện thoại di động.
-              </p>
+              <div id="faq-p1" role="region" aria-labelledby="faq-t1" hidden>
+                <p class="mt-3 text-muted leading-relaxed">
+                  Có, Landwind được tối ưu hoàn toàn cho di động và máy tính bảng. Bạn có thể lên đơn, kiểm tra tồn kho và theo dõi doanh thu mọi lúc mọi nơi ngay trên trình duyệt điện thoại.
+                </p>
+              </div>
             </div>
-            <div class="flex flex-col gap-2">
-              <h3 class="text-xl font-bold">
-                Tôi có thể nâng cấp gói giữa chừng không?
+
+            <div class="py-6 first:pt-0 last:pb-0">
+              <h3 class="text-lg font-bold">
+                <button type="button" data-faq-trigger
+                        id="faq-t2" aria-controls="faq-p2" aria-expanded="false"
+                        class="faq-trigger flex w-full items-center justify-between gap-4 text-left">
+                  <span>Tôi có thể nâng cấp hoặc hạ gói giữa chừng không?</span>
+                  <svg class="faq-icon h-5 w-5 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
               </h3>
-              <p class="text-muted">
-                Hoàn toàn có thể. Hệ thống sẽ tự động tính toán chi phí chênh
-                lệch theo số ngày sử dụng còn lại của bạn.
-              </p>
+              <div id="faq-p2" role="region" aria-labelledby="faq-t2" hidden>
+                <p class="mt-3 text-muted leading-relaxed">
+                  Hoàn toàn có thể. Hệ thống sẽ tự động tính toán chi phí chênh lệch dựa trên số ngày còn lại trong kỳ hạn của bạn mà không làm gián đoạn việc kinh doanh.
+                </p>
+              </div>
+            </div>
+
+            <div class="py-6 first:pt-0 last:pb-0">
+              <h3 class="text-lg font-bold">
+                <button type="button" data-faq-trigger
+                        id="faq-t3" aria-controls="faq-p3" aria-expanded="false"
+                        class="faq-trigger flex w-full items-center justify-between gap-4 text-left">
+                  <span>Dữ liệu của tôi được bảo mật như thế nào?</span>
+                  <svg class="faq-icon h-5 w-5 shrink-0 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+              </h3>
+              <div id="faq-p3" role="region" aria-labelledby="faq-t3" hidden>
+                <p class="mt-3 text-muted leading-relaxed">
+                  Toàn bộ dữ liệu của bạn được mã hóa SSL/TLS khi truyền tải và sao lưu tự động hàng ngày. Bạn luôn có quyền sở hữu dữ liệu và có thể xuất file Excel bất cứ lúc nào.
+                </p>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           10. CTA SECTION
+           ============================================================ -->
+      <section data-reveal class="section my-12 rounded-card bg-brand-50 text-center dark:bg-surface-dark-alt">
+        <div class="mx-auto flex max-w-2xl flex-col items-center gap-6">
+          <h2 class="font-display text-3xl font-bold sm:text-4xl">
+            Sẵn sàng bứt phá doanh số cùng Landwind?
+          </h2>
+          <p class="text-muted">
+            Tham gia cùng hơn 340+ chủ cửa hàng đã tối ưu hóa thời gian và tăng trưởng doanh thu.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="pricing.html" class="btn btn-primary btn-lg">Dùng thử 14 ngày miễn phí</a>
+            <a href="contact.html" class="btn btn-ghost btn-lg">Tư vấn trực tiếp</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================================================
+         11. FOOTER
+         ============================================================ -->
+    <footer class="border-t border-line bg-surface py-16">
+      <div class="mx-auto grid w-full max-w-6xl gap-10 px-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-col gap-4">
+          <a href="index.html" class="flex items-center gap-2">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand-600 font-display font-bold text-white">L</span>
+            <span class="font-display text-xl font-bold text-brand-600 dark:text-brand-300">Landwind</span>
+          </a>
+          <p class="text-sm text-muted">
+            Phần mềm quản lý bán hàng đơn giản, trực quan và tối ưu cho doanh nghiệp bán lẻ.
+          </p>
+        </div>
+
+        <nav aria-labelledby="footer-product" class="flex flex-col gap-3">
+          <h3 id="footer-product" class="text-xs font-bold uppercase tracking-wider text-ink">Sản phẩm</h3>
+          <ul class="flex flex-col gap-2.5 text-sm text-muted">
+            <li><a href="product.html" class="link-nav">Tính năng</a></li>
+            <li><a href="pricing.html" class="link-nav">Bảng giá</a></li>
+            <li><a href="documents.html" class="link-nav">Tài liệu</a></li>
+            <li><a href="./records.html" class="link-nav">Sổ giao dịch</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footer-support" class="flex flex-col gap-3">
+          <h3 id="footer-support" class="text-xs font-bold uppercase tracking-wider text-ink">Hỗ trợ</h3>
+          <ul class="flex flex-col gap-2.5 text-sm text-muted">
+            <li><a href="contact.html" class="link-nav">Liên hệ tư vấn</a></li>
+            <li><a href="index.html#cau-hoi" class="link-nav">Câu hỏi thường gặp</a></li>
+            <li><a href="tel:02873001234" class="link-nav">028 7300 1234</a></li>
+          </ul>
+        </nav>
+
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink mb-3">Địa chỉ</h3>
+          <address class="not-italic text-sm text-muted leading-relaxed">
+            128 Nguyễn Văn Cừ, Phường An Hòa<br />
+            TP. Cần Thơ, Việt Nam
+          </address>
         </div>
       </div>
-    </section>
 
-    <!-- 9. CTA SECTION -->
-    <section class="py-24 bg-brand-50">
-      <div
-        class="mx-auto w-full max-w-6xl px-5 text-center flex flex-col items-center gap-6"
-      >
-        <h2 class="text-4xl font-display font-bold">
-          Sẵn sàng để tăng trưởng doanh thu?
-        </h2>
-        <p class="text-muted max-w-xl">
-          Bắt đầu dùng thử 14 ngày miễn phí. Không yêu cầu thẻ tín dụng.
-        </p>
-        <a
-          href="#"
-          class="bg-brand-600 text-white px-8 py-4 rounded-lg font-bold hover:bg-accent-500 transition"
-          >Đăng ký ngay</a
-        >
-      </div>
-    </section>
-
-    <!-- 10. FOOTER (Buổi 2 - Tiết 5) -->
-    <footer class="py-24 bg-white border-t border-line">
-      <div class="mx-auto w-full max-w-6xl px-5">
-        <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="flex flex-col gap-6">
-            <span class="font-display font-bold text-2xl text-brand-600"
-              >Landwind</span
-            >
-            <p class="text-muted">
-              Phần mềm quản lý bán hàng số 1 dành cho doanh nghiệp vừa và nhỏ.
-            </p>
-          </div>
-          <!-- Nhóm Sản phẩm -->
-          <nav aria-labelledby="footer-product" class="flex flex-col gap-6">
-            <h3 id="footer-product" class="font-bold text-ink">Sản phẩm</h3>
-            <ul class="flex flex-col gap-4 text-muted">
-              <li><a href="#" class="hover:text-brand-600">Tính năng</a></li>
-              <li><a href="#" class="hover:text-brand-600">Bảng giá</a></li>
-              <li><a href="#" class="hover:text-brand-600">Bảo mật</a></li>
-            </ul>
-          </nav>
-          <!-- Nhóm Hỗ trợ -->
-          <nav aria-labelledby="footer-support" class="flex flex-col gap-6">
-            <h3 id="footer-support" class="font-bold text-ink">Hỗ trợ</h3>
-            <ul class="flex flex-col gap-4 text-muted">
-              <li><a href="#" class="hover:text-brand-600">Tài liệu</a></li>
-              <li><a href="#" class="hover:text-brand-600">Cộng đồng</a></li>
-              <li><a href="#" class="hover:text-brand-600">Liên hệ</a></li>
-            </ul>
-          </nav>
-          <!-- Nhóm Công ty -->
-          <nav aria-labelledby="footer-company" class="flex flex-col gap-6">
-            <h3 id="footer-company" class="font-bold text-ink">Công ty</h3>
-            <ul class="flex flex-col gap-4 text-muted">
-              <li><a href="#" class="hover:text-brand-600">Về chúng tôi</a></li>
-              <li><a href="#" class="hover:text-brand-600">Tuyển dụng</a></li>
-              <li><a href="#" class="hover:text-brand-600">Blog</a></li>
-            </ul>
-          </nav>
-        </div>
-        <div class="mt-12 pt-8 border-t border-line text-center text-muted">
-          &copy; 2026 Landwind. Đã đăng ký bản quyền.
-        </div>
+      <div class="mx-auto mt-12 max-w-6xl border-t border-line px-5 pt-8 text-center text-xs text-muted">
+        &copy; 2026 Landwind. Môn Thực hành Thiết kế Web. Đã đăng ký bản quyền.
       </div>
     </footer>
+
+    <!-- BUỔI 4 · Bài khởi động — Nút lên đầu trang -->
+    <button type="button" id="nut-len-dau" class="to-top" aria-label="Lên đầu trang">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    </button>
+
+    <!-- Khởi động JavaScript (hỗ trợ cả Live Server và mở trực tiếp file://) -->
+    <script src="./js/app.js"></script>
     <script type="module" src="./js/main.js"></script>
   </body>
 </html>
